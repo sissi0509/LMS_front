@@ -1,0 +1,58 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body * {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@media (min-width: 992px) {
+  #wd-kambaz .wd-main-content-offset {
+    padding-left: 140px !important;
+  }
+}
+
+.wd-dashboard-course {
+  width: 300px;
+}
+
+.list-group.wd > .list-group-item.active {
+  z-index: 2;
+  color: black;
+  background-color: white;
+  border: none;
+  border-left: 3px solid black !important;
+}
+
+.btn-secondary {
+  --bs-btn-color: #000 !important;
+  --bs-btn-bg: #c7cdd1 !important;
+  --bs-btn-border-color: #c7cdd1 !important;
+  --bs-btn-hover-color: #fff !important;
+}
+.bg-secondary {
+  --bs-secondary-rgb: 199, 205, 209;
+}
+
+.list-group-item {
+  --bs-list-group-border-color: gray;
+}
+
+.border-secondary {
+  --bs-border-secondary: red !important;
+}
+.wd-lesson {
+  border-left: 3px solid green !important;
+}
+.wd-assignment-list-item {
+  border-left: 3px solid green !important;
+}
+
+/* input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: none;
+} */
