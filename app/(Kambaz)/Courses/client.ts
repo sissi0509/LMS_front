@@ -133,3 +133,13 @@ export const findUsersForCourse = async (courseId: string) => {
   );
   return response.data;
 };
+
+export const findCourseQuizzes = async (courseId: string) => {
+  const response = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/quizzes`);
+  return response.data;
+}
+
+export const findQuizPoints = async (quizId: string) => {
+  const response = await axios.get(`${HTTP_SERVER}/api/quizzes/${quizId}/points`);
+  return response.data;
+}
