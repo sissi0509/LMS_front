@@ -3,7 +3,15 @@ import { HiDotsVertical } from "react-icons/hi";
 import { MdBorderColor } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { BiFontColor } from "react-icons/bi";
-export default function EditorQuestion() {
+export default function EditorQuestion({
+  idx,
+  question,
+  onChange,
+}: {
+  idx: number;
+  question: any;
+  onChange: any;
+}) {
   return (
     <div className="wb-quiz-editor-question">
       <div className="mb-3">
@@ -58,7 +66,7 @@ export default function EditorQuestion() {
           <option value="heading1">heading1</option>
           <option value="paragraph">paragraph</option>
         </select>
-        <div className="vr mx-2"></div>
+        {/* <div className="vr mx-2"></div> */}
         <div className="btn-group ms-2 gap-1" role="group">
           <button className="btn btn-light">
             <b>B</b>
@@ -99,12 +107,22 @@ export default function EditorQuestion() {
           </select>
         </div>
 
-        <div className="vr mx-2"></div>
-        <button className="btn btn-light">
-          <HiDotsVertical />
-        </button>
+        <div className="vr mx-2">
+          <button className="btn btn-light">
+            <HiDotsVertical />
+          </button>
+        </div>
       </div>
-      <textarea className="form-control p-5" rows={5} />
+      <div>
+        <textarea
+          className="form-control p-5"
+          rows={5}
+          defaultValue={question.question}
+          onChange={(e) =>
+            onChange(idx, { ...question, question: e.target.value })
+          }
+        />
+      </div>
     </div>
   );
 }

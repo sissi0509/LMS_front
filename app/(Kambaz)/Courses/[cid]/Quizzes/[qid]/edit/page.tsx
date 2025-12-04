@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AddNewQuestionBtn from "./AddNewQuestionBtn";
-import MultipleChoiceQuestionEditor from "./MultipleChoiceQuestionEditor";
+import GeneralQuestion from "./GeneralQuestion";
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { RxCross2 } from "react-icons/rx";
@@ -10,6 +10,24 @@ import QuizQuestionsEditor from "./QuizQuestionsEditor";
 import CancelSaveButton from "../../CancelSaveButton";
 
 export default function QuizDetailEditor() {
+  const [questions, setQuestions] = useState<any[]>([]);
+  const dummyQuestion = { type: "MCQ" as const };
+  function handleUpdateQuestion(index: number, updated: any) {
+    setQuestions((prev) => prev.map((q, i) => (i === index ? updated : q)));
+  }
+
+  useEffect(() => {
+    setQuestions([
+      {
+        type: "MCQ",
+        title: "testMCQ",
+        question: "How much is 2 + 2?",
+        points: 2,
+        choices: ["4", "3", "2", "1"],
+        correctChoiceIndex: 1,
+      },
+    ]);
+  }, []);
   return (
     <div>
       <QuizDetailEditorControl />
@@ -131,7 +149,14 @@ export default function QuizDetailEditor() {
         <h1>question</h1>
         <div>
           <AddNewQuestionBtn />
-          <MultipleChoiceQuestionEditor />
+          {questions.map((q, i) => (
+            <GeneralQuestion
+              key={i}
+              idx={i}
+              question={q}
+              onChange={handleUpdateQuestion}
+            />
+          ))}
         </div>
       </div>
     </div>
