@@ -6,27 +6,59 @@ import { Col, Form, InputGroup, Row } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { RxCross2 } from "react-icons/rx";
 import QuizDetailEditorControl from "./QuizDetailEditorControl";
-import QuizQuestionsEditor from "./QuizQuestionsEditor";
 import CancelSaveButton from "../../CancelSaveButton";
+import * as client from "../client";
+import { useParams } from "next/navigation";
+import QuestionNaviButtons from "./QuestionNaviButtons";
 
 export default function QuizDetailEditor() {
+  const { qid } = useParams<{ qid: string }>();
   const [questions, setQuestions] = useState<any[]>([]);
-  function handleUpdateQuestion(index: number, updated: any) {
+
+  const emptyQuestion = {
+    title: "",
+    question: "",
+    type: "MCQ",
+
+    points: 0,
+
+    choices: [""],
+    correctChoiceIndex: 0,
+
+    // For true false
+    correctBoolean: true,
+
+    // For fill in blank
+    acceptableAnswers: [""],
+  };
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentQuestion = questions[currentIndex];
+
+  const AddNewQuestion = () => {
+    setQuestions((prev) => {
+      const newQuestions = [...prev, { ...emptyQuestion }];
+      setCurrentIndex(newQuestions.length - 1);
+      return newQuestions;
+    });
+  };
+  const handleUpdateQuestion = (index: number, updated: any) => {
     setQuestions((prev) => prev.map((q, i) => (i === index ? updated : q)));
-  }
+  };
+
+  const sendQuestionToDb = async (index: number) => {
+    const updated_question = questions[index];
+    await client.updateQuestion(updated_question._id, updated_question);
+  };
+
+  const fetchAllQuestionsForQuiz = async () => {
+    const questionsFromDB = await client.fetchAllQuestionsForQuiz(qid);
+    setQuestions(questionsFromDB);
+  };
 
   useEffect(() => {
-    setQuestions([
-      {
-        type: "MCQ",
-        title: "testMCQ",
-        question: "How much is 2 + 2?",
-        points: 2,
-        choices: ["4", "3", "2", "1"],
-        correctChoiceIndex: 1,
-      },
-    ]);
-  }, []);
+    fetchAllQuestionsForQuiz();
+    setCurrentIndex(0);
+  }, [qid]);
   return (
     <div>
       <QuizDetailEditorControl />
@@ -147,15 +179,21 @@ export default function QuizDetailEditor() {
       <div>
         <h1>question</h1>
         <div>
-          <AddNewQuestionBtn />
-          {questions.map((q, i) => (
+          <AddNewQuestionBtn onClick={AddNewQuestion} />
+          {currentQuestion && (
             <GeneralQuestion
-              key={i}
-              idx={i}
-              question={q}
+              idx={currentIndex}
+              question={currentQuestion}
               onChange={handleUpdateQuestion}
+              onSubmit={sendQuestionToDb}
             />
-          ))}
+          )}
+          <QuestionNaviButtons
+            currentIndex={currentIndex}
+            total={questions.length}
+            onPrev={() => setCurrentIndex((i) => i - 1)}
+            onNext={() => setCurrentIndex((i) => i + 1)}
+          />
         </div>
       </div>
     </div>

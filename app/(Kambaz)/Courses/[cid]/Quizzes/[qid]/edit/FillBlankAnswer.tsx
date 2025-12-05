@@ -4,7 +4,7 @@ import { FaPlus } from "react-icons/fa6";
 import { ImArrowRight } from "react-icons/im";
 import { IoTrashBinOutline } from "react-icons/io5";
 
-export default function MCQanswers({
+export default function FillBlankAnswer({
   idx,
   question,
   onChange,
@@ -13,50 +13,36 @@ export default function MCQanswers({
   question: any;
   onChange: any;
 }) {
-  const [possibleChoices, setPossibleChoices] = useState(question.choices);
-  const [correctChoiceIndex, setCorrectChoiceIndex] = useState(
-    question.correctChoiceIndex
+  const [allowedAnswers, setAllowedAnswers] = useState(
+    question.acceptableAnswers
   );
 
   const handleChoiceChange = (answerIndex: number, text: string) => {
-    const updatedChoices = possibleChoices.map((a: any, i: number) =>
+    const updatedAnswers = allowedAnswers.map((a: any, i: number) =>
       i === answerIndex ? text : a
     );
-    setPossibleChoices(updatedChoices);
-    onChange(idx, { ...question, choices: updatedChoices });
-  };
-
-  const changeCorrectChoiceIndex = (correctIdx: number) => {
-    setCorrectChoiceIndex(correctIdx);
-    onChange(idx, { ...question, correctChoiceIndex: correctIdx });
+    setAllowedAnswers(updatedAnswers);
+    onChange(idx, { ...question, acceptableAnswers: updatedAnswers });
   };
 
   const addChoice = () => {
-    setPossibleChoices([...possibleChoices, ""]);
-    onChange(idx, { ...question, choices: possibleChoices });
+    setAllowedAnswers([...allowedAnswers, ""]);
+    onChange(idx, { ...question, acceptableAnswers: allowedAnswers });
   };
 
   const deleteChoice = (answerIndex) => {
-    possibleChoices.splice(answerIndex, 1);
-    setPossibleChoices(possibleChoices);
-    onChange(idx, { ...question, choices: possibleChoices });
+    allowedAnswers.splice(answerIndex, 1);
+    setAllowedAnswers(allowedAnswers);
+    onChange(idx, { ...question, acceptableAnswers: allowedAnswers });
   };
 
   return (
     <div>
       <h5>Answers:</h5>
-      {possibleChoices.map((a: any, i: number) => (
+      {allowedAnswers.map((a: any, i: number) => (
         <Row key={i} className="align-items-center mb-2">
-          <Col xs={12} sm={3} className="d-flex align-items-center">
-            <ImArrowRight
-              className="me-2"
-              onClick={() => changeCorrectChoiceIndex(i)}
-              style={{ cursor: "pointer" }}
-            />
-
-            <span className="text-end">
-              {i === correctChoiceIndex ? "Correct Answer" : "Possible Answer"}
-            </span>
+          <Col xs={12} sm={3}>
+            Possible Answer
           </Col>
 
           <Col xs={12} sm={8}>

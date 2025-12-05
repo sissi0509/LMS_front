@@ -22,7 +22,7 @@ export default function EditorHeader({
         ></input>
         <select
           className="form-select"
-          defaultValue={question.type}
+          value={question.type}
           onChange={(e) => onChange(idx, { ...question, type: e.target.value })}
         >
           <option value="MCQ">Multiple Choice</option>
@@ -40,7 +40,7 @@ export default function EditorHeader({
           id="question-point"
           value={question.points}
           onChange={(e) =>
-            onChange(idx, { ...question, points: e.target.value })
+            onChange(idx, { ...question, points: Number(e.target.value) })
           }
           style={{ width: "60px" }}
         />
