@@ -2,10 +2,10 @@
 import React from "react";
 import EditorHeader from "./EditorHeader";
 import EditorQuestion from "./EditorQuestion";
-import TrueFalseAnswers from "./TrueFalseAnswers";
-import QuestionControlBth from "./QuestionControlBth";
 
-export default function TrueFalseQuestionEditor({
+import QuestionControlBth from "./QuestionControlBth";
+import FillBlankAnswer from "./FillBlankAnswer";
+export default function FillBlankEditor({
   idx,
   question,
   onChange,
@@ -26,7 +26,7 @@ export default function TrueFalseQuestionEditor({
         <EditorQuestion idx={idx} question={question} onChange={onChange} />
       </div>
       <div className="p-3">
-        <TrueFalseAnswers idx={idx} question={question} onChange={onChange} />
+        <FillBlankAnswer idx={idx} question={question} onChange={onChange} />
       </div>
       <div className="p-3">
         <QuestionControlBth idx={idx} onSubmit={onSubmit} />

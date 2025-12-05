@@ -1,8 +1,10 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import { MdBorderColor } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { BiFontColor } from "react-icons/bi";
+import QuizQuestionsEditor from "./QuizQuestionsEditor";
 export default function EditorQuestion({
   idx,
   question,
@@ -117,7 +119,7 @@ export default function EditorQuestion({
         <textarea
           className="form-control p-5"
           rows={5}
-          defaultValue={question.question}
+          value={question.question}
           onChange={(e) =>
             onChange(idx, { ...question, question: e.target.value })
           }
