@@ -9,24 +9,7 @@ import QuizDetailEditorControl from "./QuizDetailEditorControl";
 import QuizQuestionsEditor from "./QuizQuestionsEditor";
 import CancelSaveButton from "../../CancelSaveButton";
 
-export default function QuizDetailEditor() {
-  const [questions, setQuestions] = useState<any[]>([]);
-  function handleUpdateQuestion(index: number, updated: any) {
-    setQuestions((prev) => prev.map((q, i) => (i === index ? updated : q)));
-  }
-
-  useEffect(() => {
-    setQuestions([
-      {
-        type: "MCQ",
-        title: "testMCQ",
-        question: "How much is 2 + 2?",
-        points: 2,
-        choices: ["4", "3", "2", "1"],
-        correctChoiceIndex: 1,
-      },
-    ]);
-  }, []);
+export default function DetailEditor() {
   return (
     <div>
       <QuizDetailEditorControl />
@@ -143,21 +126,7 @@ export default function QuizDetailEditor() {
       <div className="float-end me-4">
         <CancelSaveButton />
       </div>
-      <br /> <br /> <br /> <br />
-      <div>
-        <h1>question</h1>
-        <div>
-          <AddNewQuestionBtn />
-          {questions.map((q, i) => (
-            <GeneralQuestion
-              key={i}
-              idx={i}
-              question={q}
-              onChange={handleUpdateQuestion}
-            />
-          ))}
-        </div>
-      </div>
+      r
     </div>
   );
 }
