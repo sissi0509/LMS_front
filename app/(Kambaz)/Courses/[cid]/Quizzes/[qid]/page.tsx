@@ -6,6 +6,7 @@ import QuizDetailControl from "./QuizDetailControl";
 import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
+import StudentQuizTake from "./StudentQuizTake";
 
 export default function QuizDetailsScreen() {
     const {qid} = useParams();
@@ -86,7 +87,9 @@ export default function QuizDetailsScreen() {
             :
                 <div>
                     Hello
+                    <StudentQuizTake quiz={{}}/>
                 </div>
+                
 
             }   
 

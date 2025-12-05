@@ -143,3 +143,13 @@ export const findQuizPoints = async (quizId: string) => {
   const response = await axios.get(`${HTTP_SERVER}/api/quizzes/${quizId}/points`);
   return response.data;
 }
+
+export const createQuizForCourse = async (courseId: string, quizData: any) => {
+  const response = await axios.post(`${HTTP_SERVER}/api/courses/${courseId}/quizzes`, quizData);
+  return response.data;
+}
+
+export const updateQuiz = async (quizId: string, updateData: any) => {
+  const response = await axios.put(`${HTTP_SERVER}/api/quizzes/${quizId}`, updateData);
+  return response.data;
+}
