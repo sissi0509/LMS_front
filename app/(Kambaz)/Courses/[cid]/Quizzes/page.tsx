@@ -20,13 +20,18 @@ export default function Quizzes() {
     const { cid } = useParams();
     const { quizzes } = useSelector((state: RootState) => state.quizzesReducer);
     const { currentUser } = useSelector((state: RootState) => state.accountReducer);
-
+    
 
     const dispatch = useDispatch();
 
     const fetchQuizzes = async () => {
         const quizzes = await client.findCourseQuizzes(cid as string);
-        const pointUpdatedQuizzes = await quizzes.map((pq: any) => ({...pq, points:  client.findQuizPoints(pq._id)}))
+        const pointUpdatedQuizzes = []
+
+        for (const pq of quizzes) {
+            const point = await client.findQuizPoints(pq._id)
+            pointUpdatedQuizzes.push({...pq, points: point})
+        }
         dispatch(setQuizzes(pointUpdatedQuizzes))
     }
 
@@ -45,6 +50,12 @@ export default function Quizzes() {
         }
     }
 
+    const updateQuiz = async (quizId: string, updatedQuiz: any) => {
+        client.updateQuiz(quizId, updatedQuiz);
+        const newQuizzes = quizzes.map((q: any) => q._id === quizId ? updatedQuiz : q);
+        dispatch(setQuizzes(newQuizzes))
+    }
+
     const get_t = (a: Date) => {
         const date = a.toLocaleDateString('en-US', {month: 'short', day: '2-digit'});
         const t = a.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true}).substring(0, 5);
@@ -61,7 +72,7 @@ export default function Quizzes() {
     
     return (
         <div>
-            <QuizControls />
+            <QuizControls courseId={cid as string} />
             
             <br /><br /><hr />
             {quizzes.length !== 0 ? 
@@ -72,18 +83,16 @@ export default function Quizzes() {
                         </div>
                         <ListGroup className="rounded-0">
                             {quizzes.map((quiz) => 
-                                <Link key={quiz._id} href={`/Courses/${cid}/Quizzes/${quiz._id}`} className="text-decoration-none">
-                                    <ListGroupItem className="wd-lesson p-3 ps-1 d-flex justify-content-between align-items-center">
-                                    <div className="d-flex align-items-center justify-content-between"> 
-                                        <PiRocketLaunch className="me-2 ms-2 fs-3 text-success flex-shrink-0"/>
-                                        <div className="ms-2">
-                                            <b>{quiz.title}</b><br/>
-                                            <b>{setAvailability(new Date(quiz.availableFrom), new Date(quiz.availableUntil))}</b> | <b>Due</b> <span>{get_t(new Date(quiz.availableUntil))}</span> | {quiz.points}pts | {quiz.questions.length} Questions
-                                        </div>
+                                <ListGroupItem key={quiz._id} className="wd-lesson p-3 ps-1 d-flex justify-content-between align-items-center">
+                                <div className="d-flex align-items-center justify-content-between"> 
+                                    <PiRocketLaunch className="me-3 ms-3 fs-3 text-success flex-shrink-0"/>
+                                    <div className="">
+                                        <Link href={`/Courses/${cid}/Quizzes/${quiz._id}`} className="text-black text-decoration-none"><b className="fs-4">{quiz.title}</b></Link><br/>
+                                        <b>{setAvailability(new Date(quiz.availableFrom), new Date(quiz.availableUntil))}</b> | <b>Due</b> <span>{get_t(new Date(quiz.availableUntil))}</span> | {quiz.points} pts | {quiz.questions.length} Questions
                                     </div>
-                                    {currentUser?.role === "FACULTY" ? <QuizControlButtons cid={cid as string} quizId={quiz._id} /> : null}
-                                    </ListGroupItem>
-                                </Link>
+                                </div>
+                                {currentUser?.role === "FACULTY" ? <QuizControlButtons cid={cid as string} quiz={quiz} updateQuiz={updateQuiz} user={currentUser}/> : null}
+                                </ListGroupItem>
                                 
                             )}
                         </ListGroup>
@@ -92,7 +101,7 @@ export default function Quizzes() {
 
                 :
 
-                <div>Please Create a Quiz.</div>
+                <div className="d-flex justify-content-center"><h3>Please Create a Quiz.</h3></div>
 
             }
         </div>

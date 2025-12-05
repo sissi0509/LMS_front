@@ -3,27 +3,30 @@ import QuizCheckMark from "./QuizCheckMark";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from "react-bootstrap";
 import { useState } from "react";
 import Link from "next/link";
-export default function QuizControlButtons({cid, quizId } : {cid: string; quizId: string}) {
+export default function QuizControlButtons(
+  {cid, quiz, updateQuiz, user } : 
+  {cid: string; quiz: any; updateQuiz: (quizId: string, updatedData: any) => void; user: any}) {
 
-    const [open, setOpen] = useState(false);
+  const [showCopyDetail, setCopyDetail] = useState(false);
+
   return (
-    <div className="d-flex gap-2 align-items-center" onClick={event => event.preventDefault()}>
-      <QuizCheckMark />
+    <div className="d-flex gap-2 align-items-center">
+      <QuizCheckMark publishStatus={quiz.published}/>
       
       <Dropdown>
-        <DropdownToggle as="button" className="border-0 bg-transparent mb-2" bsPrefix="dropdown-toggle-no-caret" 
+        <DropdownToggle as="button" className="border-0 bg-transparent" bsPrefix="dropdown-toggle-no-caret" 
             >
             <IoEllipsisVertical className="fs-4" />
         </DropdownToggle>
         <DropdownMenu>
-            <DropdownItem>
-                <Link href={`/Courses/${cid}/Quizzes/${quizId}`} className="text-decoration-none text-black">Edit</Link>
+            <DropdownItem href={`/Courses/${cid}/Quizzes/${quiz._id}`}>
+                Edit
             </DropdownItem>
             <DropdownItem>
                 Delete
             </DropdownItem>
-            <DropdownItem>
-                Publish
+            <DropdownItem onClick={() => updateQuiz(quiz._id, {...quiz, published: !quiz.published})}>
+                {quiz.published ? "Unpublish" : "Publish"}
             </DropdownItem>
             <DropdownItem>
                 Copy
