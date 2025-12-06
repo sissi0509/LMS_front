@@ -5,7 +5,8 @@ export default function QuizDetailEditorControl() {
     <div>
         <Nav variant="tabs">
             <NavItem>
-                <NavLink href="#/Courses/1234/Quizzes/1/edit/b">Details</NavLink>
+                {/* <NavLink href="#">Details</NavLink> */}
+                <button className=""></button>
             </NavItem>
             <NavItem>
                 <NavLink href="#/Courses/1234/Quizzes/1/edit/a">Questions</NavLink>

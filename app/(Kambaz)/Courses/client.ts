@@ -153,3 +153,8 @@ export const updateQuiz = async (quizId: string, updateData: any) => {
   const response = await axios.put(`${HTTP_SERVER}/api/quizzes/${quizId}`, updateData);
   return response.data;
 }
+
+export const getQuizById = async (quizId: string) => {
+  const response = await axios.get(`${HTTP_SERVER}/api/quizzes/${quizId}`);
+  return response.data;
+}
