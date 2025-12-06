@@ -34,36 +34,37 @@ export default function Questions({
   return (
     <div>
       {oneQuestionPerTime && (
-        <>
-          {/* <OneQuestion
-            key={currentIndex}
-            qIdx={currentIndex}
-            question={questions[currentIndex]}
-            onChange={handleUpdateAns}
-            studentAnswer={studentAns[currentIndex] || {}}
-          /> */}
-          {/* <div className="d-flex justify-content-between align-items-center mt-3">
-            <Button
-              variant="secondary"
-              onClick={() => setCurrentIndex((i) => i - 1)}
-              disabled={currentIndex === 0}
-            >
-              Previous
-            </Button>
+        <div>{questions}</div>
+        // <>
+        //   {/* <OneQuestion
+        //     key={currentIndex}
+        //     qIdx={currentIndex}
+        //     question={questions[currentIndex]}
+        //     onChange={handleUpdateAns}
+        //     studentAnswer={studentAns[currentIndex] || {}}
+        //   /> */}
+        //   {/* <div className="d-flex justify-content-between align-items-center mt-3">
+        //     <Button
+        //       variant="secondary"
+        //       onClick={() => setCurrentIndex((i) => i - 1)}
+        //       disabled={currentIndex === 0}
+        //     >
+        //       Previous
+        //     </Button>
 
-            <span>
-              Question {currentIndex + 1} of {questions.length}
-            </span>
+        //     <span>
+        //       Question {currentIndex + 1} of {questions.length}
+        //     </span>
 
-            <Button
-              variant="secondary"
-              onClick={() => setCurrentIndex((i) => i + 1)}
-              disabled={currentIndex === questions.length - 1}
-            >
-              Next
-            </Button>
-          </div> */}
-        </>
+        //     <Button
+        //       variant="secondary"
+        //       onClick={() => setCurrentIndex((i) => i + 1)}
+        //       disabled={currentIndex === questions.length - 1}
+        //     >
+        //       Next
+        //     </Button>
+        //   </div> */}
+        // </>
       )}
       {!oneQuestionPerTime &&
         questions.map((q: any, i: number) => (

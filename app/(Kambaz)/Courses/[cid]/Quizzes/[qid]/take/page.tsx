@@ -19,7 +19,7 @@ export default function TakePage() {
   return (
     <div>
       page
-      <Questions questions={questions} oneQuestionPerTime={true} />
+      <Questions questions={questions} oneQuestionPerTime={false} />
     </div>
   );
 }
