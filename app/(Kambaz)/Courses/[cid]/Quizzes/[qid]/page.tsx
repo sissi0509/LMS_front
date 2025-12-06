@@ -38,7 +38,7 @@ export default function QuizDetailsScreen() {
                 </div>
             :
                 <div>
-                    <StudentQuizTake quiz={quiz}/>
+                    <StudentQuizTake cid={cid as string} quiz={quiz}/>
                 </div>
                 
 

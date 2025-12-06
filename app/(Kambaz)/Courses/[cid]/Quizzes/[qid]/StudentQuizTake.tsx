@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
 
-export default function StudentQuizTake({quiz}: {quiz: any}) {
+export default function StudentQuizTake({cid, quiz}: {cid: string, quiz: any}) {
 
   
   return (
@@ -19,7 +19,7 @@ export default function StudentQuizTake({quiz}: {quiz: any}) {
         <div>{quiz.description}</div>
         <br />
         <div className="d-flex justify-content-center">
-        <Button className="btn-danger rounded-1" href={``}>Take the Quiz</Button>
+        <Button className="btn-danger rounded-1" href={`/Courses/${cid}/Quizzes/${quiz._id}/take`}>Take the Quiz</Button>
         </div>
         <br />
         <hr />
