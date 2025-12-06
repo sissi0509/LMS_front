@@ -2,21 +2,15 @@
 import React, { useEffect, useState } from "react";
 import AddNewQuestionBtn from "./AddNewQuestionBtn";
 import GeneralQuestion from "./GeneralQuestion";
-import { Col, Form, InputGroup, Row, Tab, Tabs } from "react-bootstrap";
-import InputGroupText from "react-bootstrap/esm/InputGroupText";
-import { RxCross2 } from "react-icons/rx";
-import QuizDetailEditorControl from "./QuizDetailEditorControl";
-import CancelSaveButton from "../../CancelSaveButton";
 import * as client from "../client";
 import { useParams } from "next/navigation";
-import QuestionNaviButtons from "./QuestionNaviButtons";
 import DetailEditor from "./DetailEditor";
-import { Nav, NavItem, NavLink } from "react-bootstrap";
+import { Button, Tab, Tabs } from "react-bootstrap";
 
 export default function QuizDetailEditor() {
   const { qid } = useParams<{ qid: string }>();
   const [questions, setQuestions] = useState<any[]>([]);
-  const [showQuestion, setShowQuestion] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
 
   const emptyQuestion = {
     _id: "new",
@@ -36,7 +30,6 @@ export default function QuizDetailEditor() {
     setQuestions((prev) => {
       const newQuestions = [...prev, { ...emptyQuestion }];
       // setCurrentIndex(newQuestions.length - 1);
-      console.log("after add:", newQuestions);
       return newQuestions;
     });
   };
@@ -44,33 +37,27 @@ export default function QuizDetailEditor() {
     setQuestions((prev) => prev.map((q, i) => (i === index ? updated : q)));
   };
 
+  const handleDeleteQuestion = async (questionId: string) => {
+    await client.deleteQuestionFromQuiz(qid, questionId);
+    setQuestions((prev) => prev.filter((q) => q._id !== questionId));
+  };
   const resetQuestionsFromDb = async () => {
     await fetchAllQuestionsForQuiz();
   };
 
-  const sendQuestionToDb = async (index: number) => {
-    const newQuestion = questions[index];
-    console.log(newQuestion);
-
-    const updated = await client.createOrUpdateQuestion(
-      newQuestion._id,
-      newQuestion,
-      qid
+  const handleSave = async () => {
+    await Promise.all(
+      questions.map((question) =>
+        client.createOrUpdateQuestion(question._id, question, qid)
+      )
     );
-
-    setQuestions((prev) => {
-      const copy = [...prev];
-      copy[index] = updated;
-      return copy;
-    });
+    await fetchAllQuestionsForQuiz();
   };
 
   const fetchAllQuestionsForQuiz = async () => {
     const questionsFromDB = await client.fetchAllQuestionsForQuiz(qid);
     setQuestions(questionsFromDB);
   };
-
-  const [pageChange, setPageChange] = useState("Details");
 
   useEffect(() => {
     fetchAllQuestionsForQuiz();
@@ -85,7 +72,18 @@ export default function QuizDetailEditor() {
         </Tab>
         <Tab eventKey="questions" title="Questions">
           <div>
-            <h1>question</h1>
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="showDetails"
+                checked={showDetail}
+                onChange={(e) => setShowDetail(e.target.checked)}
+              />
+              <label className="form-check-label" htmlFor="showDetails">
+                Show Question Details
+              </label>
+            </div>
             <div>
               {questions.map((question: any, idx) => (
                 <GeneralQuestion
@@ -93,11 +91,24 @@ export default function QuizDetailEditor() {
                   idx={idx}
                   question={question}
                   onChange={handleUpdateQuestion}
-                  onSubmit={sendQuestionToDb}
+                  onDelete={handleDeleteQuestion}
+                  showAnser={showDetail}
                 />
               ))}
               <div className="mt-2">
                 <AddNewQuestionBtn onClick={AddNewQuestion} />
+              </div>
+              <hr />
+              <div className="float-end">
+                <Button
+                  className="btn-secondary me-2"
+                  onClick={resetQuestionsFromDb}
+                >
+                  cancel
+                </Button>
+                <Button className="btn-danger" onClick={handleSave}>
+                  save
+                </Button>
               </div>
             </div>
           </div>

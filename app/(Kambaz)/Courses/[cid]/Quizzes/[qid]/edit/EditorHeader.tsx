@@ -1,11 +1,9 @@
 import React from "react";
 
 export default function EditorHeader({
-  idx,
   question,
   onChange,
 }: {
-  idx: number;
   question: any;
   onChange: any;
 }) {
@@ -16,14 +14,12 @@ export default function EditorHeader({
           className="form-control me-2"
           placeholder="title"
           value={question.title}
-          onChange={(e) =>
-            onChange(idx, { ...question, title: e.target.value })
-          }
+          onChange={(e) => onChange({ ...question, title: e.target.value })}
         ></input>
         <select
           className="form-select"
           value={question.type}
-          onChange={(e) => onChange(idx, { ...question, type: e.target.value })}
+          onChange={(e) => onChange({ ...question, type: e.target.value })}
         >
           <option value="MCQ">Multiple Choice</option>
           <option value="TRUE_FALSE">True/False</option>
@@ -40,7 +36,7 @@ export default function EditorHeader({
           id="question-point"
           value={question.points}
           onChange={(e) =>
-            onChange(idx, { ...question, points: Number(e.target.value) })
+            onChange({ ...question, points: Number(e.target.value) })
           }
           style={{ width: "60px" }}
         />

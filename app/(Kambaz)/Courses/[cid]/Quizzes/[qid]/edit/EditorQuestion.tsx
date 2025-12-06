@@ -120,9 +120,7 @@ export default function EditorQuestion({
           className="form-control p-5"
           rows={5}
           value={question.question}
-          onChange={(e) =>
-            onChange(idx, { ...question, question: e.target.value })
-          }
+          onChange={(e) => onChange({ ...question, question: e.target.value })}
         />
       </div>
     </div>

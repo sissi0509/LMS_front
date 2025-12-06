@@ -22,18 +22,18 @@ export default function FillBlankAnswer({
       i === answerIndex ? text : a
     );
     setAllowedAnswers(updatedAnswers);
-    onChange(idx, { ...question, acceptableAnswers: updatedAnswers });
+    onChange({ ...question, acceptableAnswers: updatedAnswers });
   };
 
   const addChoice = () => {
     setAllowedAnswers([...allowedAnswers, ""]);
-    onChange(idx, { ...question, acceptableAnswers: allowedAnswers });
+    onChange({ ...question, acceptableAnswers: allowedAnswers });
   };
 
   const deleteChoice = (answerIndex) => {
     allowedAnswers.splice(answerIndex, 1);
     setAllowedAnswers(allowedAnswers);
-    onChange(idx, { ...question, acceptableAnswers: allowedAnswers });
+    onChange({ ...question, acceptableAnswers: allowedAnswers });
   };
 
   return (

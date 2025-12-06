@@ -23,23 +23,23 @@ export default function MCQanswers({
       i === answerIndex ? text : a
     );
     setPossibleChoices(updatedChoices);
-    onChange(idx, { ...question, choices: updatedChoices });
+    onChange({ ...question, choices: updatedChoices });
   };
 
   const changeCorrectChoiceIndex = (correctIdx: number) => {
     setCorrectChoiceIndex(correctIdx);
-    onChange(idx, { ...question, correctChoiceIndex: correctIdx });
+    onChange({ ...question, correctChoiceIndex: correctIdx });
   };
 
   const addChoice = () => {
     setPossibleChoices([...possibleChoices, ""]);
-    onChange(idx, { ...question, choices: possibleChoices });
+    onChange({ ...question, choices: possibleChoices });
   };
 
   const deleteChoice = (answerIndex) => {
     possibleChoices.splice(answerIndex, 1);
     setPossibleChoices(possibleChoices);
-    onChange(idx, { ...question, choices: possibleChoices });
+    onChange({ ...question, choices: possibleChoices });
   };
 
   return (

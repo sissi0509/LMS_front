@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditorHeader from "./EditorHeader";
 import EditorQuestion from "./EditorQuestion";
 import MCQanswers from "./MCQanswers";
@@ -9,23 +9,37 @@ import QuestionControlBth from "./QuestionControlBth";
 import { BsGripVertical } from "react-icons/bs";
 import { FormControl } from "react-bootstrap";
 import { GiPencil } from "react-icons/gi";
+import { RxCross2 } from "react-icons/rx";
 export default function GeneralQuestion({
   idx,
   question,
   onChange,
-  onSubmit,
+  onDelete,
+  showAnser,
 }: {
   idx: number;
   question: any;
   onChange: any;
-  onSubmit: any;
+  onDelete: any;
+  showAnser: boolean;
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
+  const [currentQuestion, setCurrentQuestion] = useState(question);
+
   const submitQuestion = () => {
-    onSubmit(idx);
+    onChange(idx, { ...currentQuestion });
     setIsEditing(false);
   };
+
+  const handleCancel = async () => {
+    setCurrentQuestion(question);
+    setIsEditing(false);
+  };
+
+  useEffect(() => {
+    setCurrentQuestion(question);
+  }, [question]);
 
   return (
     <div>
@@ -34,14 +48,28 @@ export default function GeneralQuestion({
           <div className="p-3 ps-2 bg-secondary d-flex justify-content-between">
             <div>
               <BsGripVertical className="me-2" />
-              <span>{question.title}</span>
+              <span>{currentQuestion.title}</span>
             </div>
-            <div>{question.points} pts</div>
+            <div>{currentQuestion.points} pts</div>
           </div>
 
           <div className="p-3 d-flex justify-content-between">
-            <div>{question.question}</div>
-            <GiPencil onClick={() => setIsEditing(true)} />
+            <div>{currentQuestion.question}</div>
+            <div>
+              <GiPencil onClick={() => setIsEditing(true)} />
+              <RxCross2 onClick={() => onDelete(currentQuestion._id)} />
+            </div>
+          </div>
+          <div>
+            {currentQuestion.choices}
+
+            {/* currentQuestion.correctChoiceIndex: Number,
+
+  // For true false
+  currentQuestion.correctBoolean: Boolean,
+
+  // For fill in blank
+  currentQuestion.acceptableAnswers: [String], */}
           </div>
         </div>
       )}
@@ -49,32 +77,44 @@ export default function GeneralQuestion({
       {isEditing && (
         <div className="border">
           <div className="p-2">
-            <EditorHeader idx={idx} question={question} onChange={onChange} />
+            <EditorHeader
+              idx={idx}
+              question={currentQuestion}
+              onChange={setCurrentQuestion}
+            />
           </div>
           <hr />
           <div className="p-3">
-            <EditorQuestion idx={idx} question={question} onChange={onChange} />
+            <EditorQuestion
+              idx={idx}
+              question={currentQuestion}
+              onChange={setCurrentQuestion}
+            />
           </div>
-          {question.type === "MCQ" && (
+          {currentQuestion.type === "MCQ" && (
             <div className="p-3">
-              <MCQanswers idx={idx} question={question} onChange={onChange} />
-            </div>
-          )}
-          {question.type === "TRUE_FALSE" && (
-            <div className="p-3">
-              <TrueFalseAnswers
+              <MCQanswers
                 idx={idx}
-                question={question}
-                onChange={onChange}
+                question={currentQuestion}
+                onChange={setCurrentQuestion}
               />
             </div>
           )}
-          {question.type === "FILL_BLANK" && (
+          {currentQuestion.type === "TRUE_FALSE" && (
+            <div className="p-3">
+              <TrueFalseAnswers
+                idx={idx}
+                question={currentQuestion}
+                onChange={setCurrentQuestion}
+              />
+            </div>
+          )}
+          {currentQuestion.type === "FILL_BLANK" && (
             <div className="p-3">
               <FillBlankAnswer
                 idx={idx}
-                question={question}
-                onChange={onChange}
+                question={currentQuestion}
+                onChange={setCurrentQuestion}
               />
             </div>
           )}
@@ -83,7 +123,7 @@ export default function GeneralQuestion({
             <QuestionControlBth
               idx={idx}
               onSubmit={submitQuestion}
-              onCancel={() => setIsEditing(false)}
+              onCancel={handleCancel}
             />
           </div>
         </div>

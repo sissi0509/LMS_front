@@ -23,3 +23,13 @@ export const createOrUpdateQuestion = async (
   );
   return data;
 };
+
+export const deleteQuestionFromQuiz = async (
+  quizId: string,
+  questionId: string
+) => {
+  const { data } = await axiosWithCredentials.delete(
+    `${QUIZZES_API}/${quizId}/questions/${questionId}`
+  );
+  return data;
+};

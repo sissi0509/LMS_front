@@ -14,7 +14,7 @@ export default function TrueFalseAnswers({
 
   const changeCorrectBoolean = (correctBloo: boolean) => {
     setCorrectAnswer(correctBloo);
-    onChange(idx, { ...question, correctBoolean: correctBloo });
+    onChange({ ...question, correctBoolean: correctBloo });
   };
 
   const choices = [true, false];
