@@ -19,10 +19,10 @@ export default function QuizDetailEditor() {
     question: "new question",
     type: "MCQ",
     points: 0,
-    choices: ["new choice"],
-    correctChoiceIndex: 0,
-    correctBoolean: true,
-    acceptableAnswers: ["new answer"],
+    choices: [],
+    // correctChoiceIndex: 0,
+    // correctBoolean: true,
+    acceptableAnswers: [],
   };
   // const [currentIndex, setCurrentIndex] = useState(0);
   // const currentQuestion = questions[currentIndex];

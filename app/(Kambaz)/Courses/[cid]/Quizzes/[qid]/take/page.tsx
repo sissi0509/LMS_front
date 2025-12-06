@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Questions from "./Questions";
-import { useParams } from "next/navigation";
-
 import * as clientX from "../client";
 import * as clientE from "../../../../client";
 import QuizDescription from "./QuizDescription";
@@ -14,12 +13,47 @@ export default function TakePage() {
 
   const fetchAllQuestionsForQuiz = async () => {
     const questionsFromDB = await clientX.fetchAllQuestionsForQuiz(qid);
-    setQuestions(questionsFromDB);
+    if (quiz.shuffleAnswers) {
+      const shuffled = questionsFromDB.map((q: any) => {
+        if (q.type === "MCQ") {
+          q.choices = shuffleArray(q.choices);
+        }
+        return q;
+      });
+      setQuestions(shuffled);
+    } else {
+      setQuestions(questionsFromDB);
+    }
+  };
+  const shuffleArray = (arr: any[]) => {
+    const copy = [...arr];
+    const len = copy.length;
+    for (let i = 0; i < len; i++) {
+      const j = Math.floor(Math.random() * len);
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
   };
 
+  const shuffleQuestionChoices = (q: any) => {
+    if (q.type !== "MCQ") return q;
+
+    const originalChoices = q.choices;
+    const originalCorrectIndex = q.correctChoiceIndex;
+    const indices = originalChoices.map((_: any, i: number) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const newChoices = shuffledIndices.map((i) => originalChoices[i]);
+    const newCorrectIndex = shuffledIndices.indexOf(originalCorrectIndex);
+
+    return {
+      ...q,
+      choices: newChoices,
+      correctChoiceIndex: newCorrectIndex,
+    };
+  };
   const fetchQuiz = async () => {
-    const quiz = await clientE.getQuizById(qid);
-    setQuiz(quiz);
+    const newQuiz = await clientE.getQuizById(qid);
+    setQuiz(newQuiz);
   };
 
   useEffect(() => {
@@ -27,11 +61,13 @@ export default function TakePage() {
     fetchQuiz();
   }, [qid]);
 
-  console.log(quiz?.title);
+  if (!questions || questions.length === 0) {
+    return <div>Loading questions...</div>;
+  }
+
   return (
     <div>
-      page
-      <Questions questions={questions} oneQuestionPerTime={false} />
+      <Questions questions={questions} onePertime={quiz.oneQuestionPerTime} />
     </div>
   );
 }

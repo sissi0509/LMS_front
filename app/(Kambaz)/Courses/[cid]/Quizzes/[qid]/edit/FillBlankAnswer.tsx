@@ -25,9 +25,17 @@ export default function FillBlankAnswer({
     onChange({ ...question, acceptableAnswers: updatedAnswers });
   };
 
+  // const addChoice = () => {
+  //   setAllowedAnswers([...allowedAnswers, ""]);
+  //   onChange({ ...question, acceptableAnswers: allowedAnswers });
+  // };
+
   const addChoice = () => {
-    setAllowedAnswers([...allowedAnswers, ""]);
-    onChange({ ...question, acceptableAnswers: allowedAnswers });
+    setAllowedAnswers((prev: any) => {
+      const updated = [...prev, ""];
+      onChange({ ...question, acceptableAnswers: allowedAnswers });
+      return updated;
+    });
   };
 
   const deleteChoice = (answerIndex) => {
@@ -39,7 +47,7 @@ export default function FillBlankAnswer({
   return (
     <div>
       <h5>Answers:</h5>
-      {allowedAnswers.map((a: any, i: number) => (
+      {allowedAnswers?.map((a: any, i: number) => (
         <Row key={i} className="align-items-center mb-2">
           <Col xs={12} sm={3}>
             Possible Answer

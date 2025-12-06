@@ -2,14 +2,13 @@
 import React, { useEffect, useState } from "react";
 import OneQuestion from "./OneQuestion";
 import { Button } from "react-bootstrap";
-import { DiVim } from "react-icons/di";
-import { HiDotsVertical } from "react-icons/hi";
+
 export default function Questions({
   questions,
-  oneQuestionPerTime,
+  onePertime,
 }: {
   questions: any;
-  oneQuestionPerTime: boolean;
+  onePertime: boolean;
 }) {
   const [studentAns, setStudentAns] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -33,40 +32,35 @@ export default function Questions({
   }, [questions]);
   return (
     <div>
-      {oneQuestionPerTime && (
-        <div>{questions}</div>
-        // <>
-        //   {/* <OneQuestion
-        //     key={currentIndex}
-        //     qIdx={currentIndex}
-        //     question={questions[currentIndex]}
-        //     onChange={handleUpdateAns}
-        //     studentAnswer={studentAns[currentIndex] || {}}
-        //   /> */}
-        //   {/* <div className="d-flex justify-content-between align-items-center mt-3">
-        //     <Button
-        //       variant="secondary"
-        //       onClick={() => setCurrentIndex((i) => i - 1)}
-        //       disabled={currentIndex === 0}
-        //     >
-        //       Previous
-        //     </Button>
+      {onePertime && (
+        <>
+          <OneQuestion
+            key={currentIndex}
+            qIdx={currentIndex}
+            question={questions[currentIndex]}
+            onChange={handleUpdateAns}
+            studentAnswer={studentAns[currentIndex] || {}}
+          />
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <Button
+              className="btn-secondary"
+              onClick={() => setCurrentIndex((i) => i - 1)}
+              disabled={currentIndex === 0}
+            >
+              Previous
+            </Button>
 
-        //     <span>
-        //       Question {currentIndex + 1} of {questions.length}
-        //     </span>
-
-        //     <Button
-        //       variant="secondary"
-        //       onClick={() => setCurrentIndex((i) => i + 1)}
-        //       disabled={currentIndex === questions.length - 1}
-        //     >
-        //       Next
-        //     </Button>
-        //   </div> */}
-        // </>
+            <Button
+              className="btn-secondary"
+              onClick={() => setCurrentIndex((i) => i + 1)}
+              disabled={currentIndex === questions.length - 1}
+            >
+              Next
+            </Button>
+          </div>
+        </>
       )}
-      {!oneQuestionPerTime &&
+      {!onePertime &&
         questions.map((q: any, i: number) => (
           <OneQuestion
             key={i}

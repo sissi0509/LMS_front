@@ -16,7 +16,7 @@ export default function DetailAnswers({ question }: { question: any }) {
             name={`${question.title}-${question.type}`}
             label={choice}
             className="mb-2"
-            checked={index === question.correctChoiceIndex}
+            checked={choice.toLowerCase === question.correctChoiceText}
             disabled
           />
         ))}
