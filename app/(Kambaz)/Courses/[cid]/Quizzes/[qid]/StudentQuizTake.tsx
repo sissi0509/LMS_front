@@ -2,6 +2,8 @@ import React from 'react'
 import { Button } from 'react-bootstrap'
 
 export default function StudentQuizTake({quiz}: {quiz: any}) {
+
+  
   return (
     <div>
         <h1>Title</h1>
@@ -14,10 +16,10 @@ export default function StudentQuizTake({quiz}: {quiz: any}) {
                 <div className="me-5 text-nowrap mb-1"><b>Time Limit</b> 20 Minutes</div>
             </div>
         <hr />
-        <div>Description</div>
+        <div>{quiz.description}</div>
         <br />
         <div className="d-flex justify-content-center">
-        <Button className="btn-danger rounded-1">Take the Quiz</Button>
+        <Button className="btn-danger rounded-1" href={``}>Take the Quiz</Button>
         </div>
         <br />
         <hr />

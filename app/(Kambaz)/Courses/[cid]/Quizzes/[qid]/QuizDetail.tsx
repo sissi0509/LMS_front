@@ -1,20 +1,22 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { Col, Row, Table } from 'react-bootstrap'
+import { Button, Col, Row, Table } from 'react-bootstrap'
 import * as client from "../../../client";
+import Link from 'next/link';
 
 
-export default function QuizDetail({quiz}: {quiz: any}) {
+export default function QuizDetail({courseId, quizId}: {courseId: string; quizId: string}) {
 
-    const [point, setPoint] = useState(0)
+    const [quiz, setQuiz] = useState<any>({})
 
-    const getPointForQuiz = async () => {
-        const newPoint = await client.findQuizPoints(quiz._id)
-        setPoint(newPoint);
+    const fetchQuiz = async () => {
+        const specificQuiz = await client.getQuizById(quizId)
+        const point = await client.findQuizPoints(quizId)
+        setQuiz({...specificQuiz, points: point})
     }
 
     useEffect(() => {
-        getPointForQuiz();
+        fetchQuiz()
     }, [])
     
   return (
@@ -29,11 +31,11 @@ export default function QuizDetail({quiz}: {quiz: any}) {
         </Row>
         <Row>
             <Col xs="3"  className="text-end">Points</Col>
-            <Col>{point}</Col>
+            <Col>{quiz.points}</Col>
         </Row>
         <Row>
             <Col xs="3" className="text-end">Assignment Group</Col>
-            <Col>{quiz.assignmentGroup ? "Yes" : "No"}</Col>
+            <Col>{quiz.assignmentGroup}</Col>
         </Row>
         <Row>
             <Col xs="3"  className="text-end">Shuffle Answers</Col>
@@ -53,7 +55,11 @@ export default function QuizDetail({quiz}: {quiz: any}) {
         </Row>
         <Row>
             <Col xs="3"  className="text-end">Show Correct Answers</Col>
-            <Col>{quiz.showCorrectAnswersAt ? "Yes" : "No"}</Col>
+            <Col>
+                {quiz.showCorrectAnswers && quiz.showCorrectAnswersAt && <span>{quiz.showCorrectAnswersAt.slice(0, 19)}</span>}
+                {quiz.showCorrectAnswers && quiz.showCorrectAnswersAt === null && <span>Immediately</span>}
+                {quiz.showCorrectAnswers === false && <span>No</span>}
+            </Col>
         </Row>
                         <Row>
             <Col xs="3" className="text-end">One Question at a Time</Col>
@@ -77,6 +83,10 @@ export default function QuizDetail({quiz}: {quiz: any}) {
                 <tr><td>{quiz.dueDate ? quiz.dueDate : "-"}</td><td>{quiz.availableFrom ? quiz.availableFrom : "-"}</td><td>{quiz.availableUntil ? quiz.availableUntil : "-"}</td></tr>
             </tbody>
         </Table>
+
+        <hr />
+
+        <Link href={`/Courses/${courseId}/Quizzes/`} className="btn btn-secondary btn-lg">Previous</Link>
         </div>
   )
 }

@@ -158,3 +158,13 @@ export const getQuizById = async (quizId: string) => {
   const response = await axios.get(`${HTTP_SERVER}/api/quizzes/${quizId}`);
   return response.data;
 }
+
+export const deleteQuizFromCourse = async (courseId: string, quizId: string) => {
+  const response = await axios.delete(`${COURSES_API}/${courseId}/quizzes/${quizId}`);
+  return response.data;
+}
+
+export const copyQuiz = async (courseId: string, quizId: string) => {
+  const response = await axios.post(`${COURSES_API}/${courseId}/quizzes/${quizId}/copy`)
+  return response.data;
+}

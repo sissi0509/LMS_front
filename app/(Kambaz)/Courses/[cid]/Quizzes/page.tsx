@@ -11,6 +11,7 @@ import { RootState } from "../../../store";
 import { setQuizzes } from "./reducer";
 import Link from "next/link";
 import QuizControlButtons from "./QuizControlButtons";
+import QuizCopyDetail from "./QuizCopyDetail";
 
 
 
@@ -63,6 +64,11 @@ export default function Quizzes() {
         return `${date} at ${t}${z}`;
     }
 
+    const deleteQuizFromCourse = async (courseId: string, quizId: string) => {
+        await client.deleteQuizFromCourse(courseId, quizId)
+        dispatch(setQuizzes(quizzes.filter((quiz: any) => quiz._id !== quizId)))
+    }
+
     // const onDeleteQuiz = async ()
 
     useEffect(() => {
@@ -73,7 +79,7 @@ export default function Quizzes() {
     return (
         <div>
             <QuizControls courseId={cid as string} />
-            
+
             <br /><br /><hr />
             {quizzes.length !== 0 ? 
                 <ListGroup className="rounded-0 mt-4">
@@ -86,18 +92,19 @@ export default function Quizzes() {
                                 <ListGroupItem key={quiz._id} className="wd-lesson p-3 ps-1 d-flex justify-content-between align-items-center">
                                 <div className="d-flex align-items-center justify-content-between"> 
                                     <PiRocketLaunch className="me-3 ms-3 fs-3 text-success flex-shrink-0"/>
-                                    <div className="">
-                                        <Link href={`/Courses/${cid}/Quizzes/${quiz._id}`} className="text-black text-decoration-none"><b className="fs-4">{quiz.title}</b></Link><br/>
-                                        <b>{setAvailability(new Date(quiz.availableFrom), new Date(quiz.availableUntil))}</b> | <b>Due</b> <span>{get_t(new Date(quiz.availableUntil))}</span> | {quiz.points} pts | {quiz.questions.length} Questions
+                                    <div>
+                                        <Link href={`/Courses/${cid}/Quizzes/${quiz._id}`} className="text-black text-decoration-none"><b>{quiz.title}</b></Link><br/>
+                                        <b className="fs-6">{setAvailability(new Date(quiz.availableFrom), new Date(quiz.availableUntil))}</b> | <b className="fs-6">Due</b> <span className="fs-6">{get_t(new Date(quiz.availableUntil))}</span> | <span className="fs-6">{quiz.points} pts | {quiz.questions.length} Questions</span>
                                     </div>
                                 </div>
-                                {currentUser?.role === "FACULTY" ? <QuizControlButtons cid={cid as string} quiz={quiz} updateQuiz={updateQuiz} user={currentUser}/> : null}
+                                {currentUser?.role === "FACULTY" ? <QuizControlButtons cid={cid as string} quiz={quiz} updateQuiz={updateQuiz} user={currentUser} deleteQuiz={deleteQuizFromCourse}/> : null}
                                 </ListGroupItem>
                                 
                             )}
                         </ListGroup>
                     </ListGroupItem>
                 </ListGroup>
+                
 
                 :
 
