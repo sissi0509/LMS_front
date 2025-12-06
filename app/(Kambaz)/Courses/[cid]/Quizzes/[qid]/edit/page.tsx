@@ -44,6 +44,10 @@ export default function QuizDetailEditor() {
     setQuestions((prev) => prev.map((q, i) => (i === index ? updated : q)));
   };
 
+  const resetQuestionsFromDb = async () => {
+    await fetchAllQuestionsForQuiz();
+  };
+
   const sendQuestionToDb = async (index: number) => {
     const newQuestion = questions[index];
     console.log(newQuestion);
