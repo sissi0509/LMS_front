@@ -22,7 +22,6 @@ export default function QuizDetailsScreen() {
         const newQuiz = await client.getQuizById(qid as string);
         console.log(newQuiz)
         setQuiz(newQuiz)
-        console.log(quiz._id)
     }
 
     useEffect(() => {
@@ -35,7 +34,7 @@ export default function QuizDetailsScreen() {
                 <div>
                 <QuizDetailControl courseId={cid as string} quizId={qid as string}/>
                 <hr />
-                <QuizDetail quiz={quiz}/>
+                <QuizDetail courseId={cid as string} quizId={qid as string}/>
                 </div>
             :
                 <div>
