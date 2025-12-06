@@ -4,6 +4,7 @@ const axiosWithCredentials = axios.create({ withCredentials: true });
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 const QUIZZES_API = `${HTTP_SERVER}/api/quizzes`;
 const QUESTION_API = `${HTTP_SERVER}/api/questions`;
+const USER_API = `${HTTP_SERVER}/api/users`;
 
 export const fetchAllQuestionsForQuiz = async (quizId: string) => {
   const { data } = await axiosWithCredentials.get(
@@ -30,6 +31,13 @@ export const deleteQuestionFromQuiz = async (
 ) => {
   const { data } = await axiosWithCredentials.delete(
     `${QUIZZES_API}/${quizId}/questions/${questionId}`
+  );
+  return data;
+};
+
+export const fetchAttempt = async (userId: string, quizId: string) => {
+  const { data } = await axiosWithCredentials.get(
+    `${USER_API}/${userId}/quizzes/${quizId}/attempts`
   );
   return data;
 };

@@ -25,7 +25,7 @@ export default function DetailAnswers({ question }: { question: any }) {
         trueFalseAnswers.map((choice: boolean, index: number) => (
           <Form.Check
             key={index}
-            type="checkbox"
+            type="radio"
             name={`${question.title}-${question.type}`}
             label={choice ? "True" : "False"}
             className="mb-2"

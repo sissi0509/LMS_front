@@ -1,17 +1,24 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Answers from "./Answers";
 
 import { BsGripVertical } from "react-icons/bs";
 
-export default function OneQuestion({ question }: { question: any }) {
+export default function OneQuestion({
+  qIdx,
+  question,
+  onChange,
+  studentAnswer,
+}: {
+  qIdx: number;
+  question: any;
+  onChange: any;
+  studentAnswer: any;
+}) {
   return (
     <div className="border rounded me-2 mt-2">
       <div className="p-3 ps-2 bg-secondary d-flex justify-content-between">
-        <div>
-          <BsGripVertical className="me-2" />
-          <span>{question.title}</span>
-        </div>
-
+        <div className="ms-2">{question.title}</div>
         <div>{question.points} pts</div>
       </div>
 
@@ -20,7 +27,12 @@ export default function OneQuestion({ question }: { question: any }) {
       </div>
 
       <div className="p-3">
-        <Answers question={question} />
+        <Answers
+          qIdx={qIdx}
+          question={question}
+          onChange={onChange}
+          studentAnswer={studentAnswer}
+        />
       </div>
     </div>
   );

@@ -1,10 +1,19 @@
 import React from "react";
 import { Form } from "react-bootstrap";
 
-export default function Answers({ question }: { question: any }) {
+export default function Answers({
+  qIdx,
+  question,
+  onChange,
+  studentAnswer,
+}: {
+  qIdx: number;
+  question: any;
+  onChange: any;
+  studentAnswer: any;
+}) {
   const choices = question.choices || [];
   const trueFalseAnswers = [true, false];
-  const answers = question.acceptableAnswers || [];
 
   return (
     <div className="mt-3">
@@ -12,11 +21,18 @@ export default function Answers({ question }: { question: any }) {
         choices.map((choice: string, index: number) => (
           <Form.Check
             key={index}
+            id={`q${qIdx}-choice${index}`}
             type="radio"
-            name={`${question._id}-${question.question}`}
+            name={String(qIdx)}
             label={choice}
             className="mb-2"
-            checked={index === question.correctChoiceIndex}
+            checked={index === studentAnswer?.selectedChoiceIndex}
+            onChange={() =>
+              onChange(qIdx, {
+                ...studentAnswer,
+                selectedChoiceIndex: index,
+              })
+            }
           />
         ))}
 
@@ -24,19 +40,34 @@ export default function Answers({ question }: { question: any }) {
         trueFalseAnswers.map((choice: boolean, index: number) => (
           <Form.Check
             key={index}
-            type="checkbox"
-            name={`${question._id}-${question.question}`}
+            id={`q${qIdx}-choice${index}`}
+            type="radio"
+            name={String(qIdx)}
             label={choice ? "True" : "False"}
             className="mb-2"
-            checked={choice === question.correctBoolean}
+            checked={choice === studentAnswer?.selectedBoolean}
+            onChange={() =>
+              onChange(qIdx, {
+                ...studentAnswer,
+                selectedBoolean: choice,
+              })
+            }
           />
         ))}
       {question.type === "FILL_BLANK" && (
         <div>
-          <strong>Acceptable Answers:</strong>
-          {answers.map((choice: string, index: number) => (
-            <div key={index}>{choice}</div>
-          ))}
+          <strong>Your Answer:</strong>
+          <input
+            className="ms-2"
+            type="text"
+            value={studentAnswer?.textAnswer ?? ""}
+            onChange={(e) =>
+              onChange(qIdx, {
+                ...studentAnswer,
+                textAnswer: e.target.value,
+              })
+            }
+          />
         </div>
       )}
     </div>
