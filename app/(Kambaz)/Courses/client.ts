@@ -168,3 +168,13 @@ export const copyQuiz = async (courseId: string, quizId: string) => {
   const response = await axios.post(`${COURSES_API}/${courseId}/quizzes/${quizId}/copy`)
   return response.data;
 }
+
+export const getUserQuizAttempt = async (quizId: string, userId: string) => {
+  const response = await axiosWithCredentials.get(`${USERS_API}/${userId}/quizzes/${quizId}/attempts`)
+  return response.data;
+}
+
+export const createOrUpdateAttempt = async (userId: string, quizId: string, attemptData: any) => {
+  const response = await axios.post(`${USERS_API}/${userId}/quizzes/${quizId}/attempts`, attemptData)
+  return response.data;
+}

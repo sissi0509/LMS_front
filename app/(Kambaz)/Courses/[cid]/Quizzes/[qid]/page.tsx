@@ -17,16 +17,24 @@ export default function QuizDetailsScreen() {
     const { currentUser } = useSelector((state: RootState) => state.accountReducer);
 
     const [quiz, setQuiz] = useState<any>({})
+    const [quizTotal, setQuizTotal] = useState(0);
 
     const getQuizById = async () => {
         const newQuiz = await client.getQuizById(qid as string);
-        console.log(newQuiz)
         setQuiz(newQuiz)
+    }
+
+    const getQuizTotal = async () => {
+        const total = await client.findQuizPoints(qid as string)
+        setQuizTotal(total)
     }
 
     useEffect(() => {
         getQuizById();
+        getQuizTotal();
     }, [])
+
+    console.log(quizTotal)
 
     return (
         <div>
@@ -38,7 +46,7 @@ export default function QuizDetailsScreen() {
                 </div>
             :
                 <div>
-                    <StudentQuizTake cid={cid as string} quiz={quiz}/>
+                    <StudentQuizTake cid={cid as string} qid={qid as string} userId={currentUser?._id ? currentUser._id : ""}/>
                 </div>
                 
 
