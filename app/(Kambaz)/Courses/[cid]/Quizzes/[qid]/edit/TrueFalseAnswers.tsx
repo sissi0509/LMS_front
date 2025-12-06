@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import { ImArrowRight } from "react-icons/im";
 
 export default function TrueFalseAnswers({
-  idx,
   question,
   onChange,
 }: {
-  idx: number;
   question: any;
   onChange: any;
 }) {

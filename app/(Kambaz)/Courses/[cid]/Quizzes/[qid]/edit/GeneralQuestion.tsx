@@ -7,9 +7,10 @@ import FillBlankAnswer from "./FillBlankAnswer";
 import TrueFalseAnswers from "./TrueFalseAnswers";
 import QuestionControlBth from "./QuestionControlBth";
 import { BsGripVertical } from "react-icons/bs";
-import { FormControl } from "react-bootstrap";
 import { GiPencil } from "react-icons/gi";
 import { RxCross2 } from "react-icons/rx";
+import DetailAnswers from "./DetailAnswers";
+
 export default function GeneralQuestion({
   idx,
   question,
@@ -50,6 +51,7 @@ export default function GeneralQuestion({
               <BsGripVertical className="me-2" />
               <span>{currentQuestion.title}</span>
             </div>
+
             <div>{currentQuestion.points} pts</div>
           </div>
 
@@ -60,17 +62,11 @@ export default function GeneralQuestion({
               <RxCross2 onClick={() => onDelete(currentQuestion._id)} />
             </div>
           </div>
-          <div>
-            {currentQuestion.choices}
-
-            {/* currentQuestion.correctChoiceIndex: Number,
-
-  // For true false
-  currentQuestion.correctBoolean: Boolean,
-
-  // For fill in blank
-  currentQuestion.acceptableAnswers: [String], */}
-          </div>
+          {showAnser && (
+            <div className="p-3">
+              <DetailAnswers question={currentQuestion} />
+            </div>
+          )}
         </div>
       )}
 
@@ -78,7 +74,6 @@ export default function GeneralQuestion({
         <div className="border">
           <div className="p-2">
             <EditorHeader
-              idx={idx}
               question={currentQuestion}
               onChange={setCurrentQuestion}
             />
@@ -86,7 +81,6 @@ export default function GeneralQuestion({
           <hr />
           <div className="p-3">
             <EditorQuestion
-              idx={idx}
               question={currentQuestion}
               onChange={setCurrentQuestion}
             />
@@ -94,7 +88,6 @@ export default function GeneralQuestion({
           {currentQuestion.type === "MCQ" && (
             <div className="p-3">
               <MCQanswers
-                idx={idx}
                 question={currentQuestion}
                 onChange={setCurrentQuestion}
               />
@@ -103,7 +96,6 @@ export default function GeneralQuestion({
           {currentQuestion.type === "TRUE_FALSE" && (
             <div className="p-3">
               <TrueFalseAnswers
-                idx={idx}
                 question={currentQuestion}
                 onChange={setCurrentQuestion}
               />
@@ -121,7 +113,6 @@ export default function GeneralQuestion({
 
           <div className="p-3">
             <QuestionControlBth
-              idx={idx}
               onSubmit={submitQuestion}
               onCancel={handleCancel}
             />

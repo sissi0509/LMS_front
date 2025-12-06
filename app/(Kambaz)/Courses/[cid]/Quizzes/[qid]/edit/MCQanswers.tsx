@@ -5,11 +5,9 @@ import { ImArrowRight } from "react-icons/im";
 import { IoTrashBinOutline } from "react-icons/io5";
 
 export default function MCQanswers({
-  idx,
   question,
   onChange,
 }: {
-  idx: number;
   question: any;
   onChange: any;
 }) {

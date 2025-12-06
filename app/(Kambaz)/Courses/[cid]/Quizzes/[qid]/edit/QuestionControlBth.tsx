@@ -3,11 +3,9 @@ import { Button } from "react-bootstrap";
 import * as client from "../client";
 
 export default function QuestionControlBth({
-  idx,
   onSubmit,
   onCancel,
 }: {
-  idx: number;
   onSubmit: any;
   onCancel: any;
 }) {
