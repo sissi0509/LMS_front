@@ -2,20 +2,29 @@
 import React, { useEffect, useState } from "react";
 import Questions from "./Questions";
 import { useParams } from "next/navigation";
-import * as client from "../client";
+import * as clientX from "../client";
+import * as clientE from "../../../../client";
 export default function TakePage() {
   const { qid } = useParams<{ qid: string }>();
   const [questions, setQuestions] = useState<any[]>([]);
+  const [quiz, setQuiz] = useState<any>({});
 
   const fetchAllQuestionsForQuiz = async () => {
-    const questionsFromDB = await client.fetchAllQuestionsForQuiz(qid);
+    const questionsFromDB = await clientX.fetchAllQuestionsForQuiz(qid);
     setQuestions(questionsFromDB);
+  };
+
+  const fetchQuiz = async () => {
+    const quiz = await clientE.getQuizById(qid);
+    setQuiz(quiz);
   };
 
   useEffect(() => {
     fetchAllQuestionsForQuiz();
-    // setCurrentIndex(0);
+    fetchQuiz();
   }, [qid]);
+
+  console.log(quiz?.title);
   return (
     <div>
       page
