@@ -2,21 +2,29 @@
 import React, { useEffect, useState } from "react";
 import AddNewQuestionBtn from "./AddNewQuestionBtn";
 import GeneralQuestion from "./GeneralQuestion";
-import { Col, Dropdown, Form, InputGroup, Row } from "react-bootstrap";
+import { Button, Col, Dropdown, Form, InputGroup, Row } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { RxCross2 } from "react-icons/rx";
-import QuizDetailEditorControl from "./QuizDetailEditorControl";
+// import QuizDetailEditorControl from "./QuizDetailEditorControl";
 import QuizQuestionsEditor from "./QuizQuestionsEditor";
-import CancelSaveButton from "../../CancelSaveButton";
+// import CancelSaveButton from "../../CancelSaveButton";
 import * as client from "../../../../client";
+import Link from "next/link";
 
-export default function DetailEditor({quizId}: {quizId: string}) {
+export default function DetailEditor({courseId, quizId}: {courseId: string; quizId: string}) {
 
   const [q, setQuiz] = useState<any>({})
   const [multipleAttempt, setMultipleAttempt] = useState(false)
   const [timeLimitBool, setTimeLimitBool] = useState(false)
   const [shuffle, setShuffle] = useState(false)
-  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false)
+  const [showCorrAnswer, setShowCorrectAnswer] = useState(false)
+  const [accessCodeRequirement, setAccessCodeRequirement] = useState(false)
+  const [oneQuestion, setOneQuestion] = useState(false)
+  const [webcam, setWbecam] = useState(false)
+  const [due, setDue] = useState("")
+  const [available, setAvailable] = useState("")
+  const [until, setUntil] = useState("")
+  const [correctAnswerAt, setCorrectAnswerAt] = useState("")
  
   const fetchQuiz = async () => {
     const quiz = await client.getQuizById(quizId)
@@ -25,36 +33,39 @@ export default function DetailEditor({quizId}: {quizId: string}) {
     setTimeLimitBool(quiz.timeLimitMinutes > 0 ? true : false)
     setShuffle(quiz.shuffleAnswers)
     setShowCorrectAnswer(quiz.showCorrectAnswers)
+    setAccessCodeRequirement(quiz.accessCode !== null ? true : false)
+    setOneQuestion(quiz.oneQuestionPerTime)
+    setWbecam(quiz.webcamRequired)
+    setDue(quiz.dueDate ? quiz.dueDate.slice(0, 10) : "")
+    setAvailable(quiz.availableFrom ? quiz.availableFrom.slice(0, 10) : "")
+    setUntil(quiz.availableUntil ? quiz.availableUntil.slice(0, 10) : "")
+    setCorrectAnswerAt(quiz.showCorrectAnswersAt ? quiz.showCorrectAnswersAt.slice(0,10) : "")
   }
 
-  const dateToString = (date: Date) => {
-    const year = date.getFullYear()
-    const month = date.getMonth() + 1;
-    const strMonth = "0" + month
-    const specificDate = date.getDate()
-    const strDate = "0" + specificDate;
-
-    return year + "-" + strMonth + strDate;
-
+  const updateQuizWithoutPublish = async (quizData: any) => {
+    const updatedQuiz = await client.updateQuiz(quizId, quizData)
+    setQuiz(updatedQuiz)
   }
 
-  const updateQuiz = async () => {
-    
+  const updateQuizWithPublish = async (quizData: any) => {
+    const publishedQuiz = {...quizData, published: true}
+    const updatedQuiz = await client.updateQuiz(quizId, publishedQuiz)
+    setQuiz(updatedQuiz)
   }
 
   useEffect(() => {
       fetchQuiz();
   }, [])
 
-  console.log(q.availableFrom?.slice(0, 19))
+  console.log(typeof q.dueDate)
 
   return (
     <div>
       <Form>
-        <Form.Control defaultValue={q.title} className="mb-3 w-75" />
+        <Form.Control defaultValue={q.title} className="mb-3" onChange={(e) => setQuiz({...q, title: e.target.value})}/>
 
         <div>Quiz Instructions: </div>
-        <Form.Control as="textarea" rows={8} defaultValue={q.description}  className="mb-3 w-75" />
+        <Form.Control as="textarea" rows={8} defaultValue={q.description} className="mb-3" onChange={(e) => setQuiz({...q, description: e.target.value})} />
 
         <div className="me-4 ">
           <Row className="mb-3">
@@ -62,7 +73,7 @@ export default function DetailEditor({quizId}: {quizId: string}) {
               Quiz type
             </Form.Label>
             <Col sm="4">
-              <Form.Select value={q.type}>
+              <Form.Select value={q.type} onChange={(e) => setQuiz({...q, type: e.target.value})}>
                 <option value="GRADED_QUIZ">Graded Quiz</option>
                 <option value="PRACTICE_QUIZ">Practice Quiz</option>
                 <option value="GRADED_SURVEY">Graded Survey</option>
@@ -76,7 +87,7 @@ export default function DetailEditor({quizId}: {quizId: string}) {
               Assignment Group
             </Form.Label>
             <Col sm="4">
-              <Form.Select value={q.assignmentGroup}>
+              <Form.Select value={q.assignmentGroup} onChange={(e) => setQuiz({...q, assignmentGroup: e.target.value})}>
                 <option value="QUIZZES">QUIZZES</option>
                 <option value="EXAMS">EXAMS</option>
                 <option value="ASSIGNMENTS">ASSIGNMENTS</option>
@@ -87,7 +98,9 @@ export default function DetailEditor({quizId}: {quizId: string}) {
                 <Form.Label>Options</Form.Label>
                 <Form.Check name="quizdetailoption" label="Shuffle Answers" 
                     checked={shuffle}
-                    onChange={(e) => setShuffle(e.target.checked)}/>
+                    onChange={(e) => {
+                      setShuffle(e.target.checked)
+                      setQuiz({...q, shuffleAnswers: e.target.checked})}}/>
 
                 <Form.Group className="d-flex align-items-center">
                   <Form.Check
@@ -101,6 +114,7 @@ export default function DetailEditor({quizId}: {quizId: string}) {
                     type="number me-5"
                     value={timeLimitBool ? q.timeLimitMinutes : 0}
                     className="me-2"
+                    onChange={(e) => setQuiz({...q, timeLimitMinutes: e.target.value})}
                   />
                   <span>Minutes</span>
                 </Form.Group>
@@ -117,14 +131,16 @@ export default function DetailEditor({quizId}: {quizId: string}) {
                     name="quizdetailoption"
                     label="Allow Multiple Attempts"
                     checked={multipleAttempt}
-                    onChange={(e) => setMultipleAttempt(e.target.checked)}
+                    onChange={(e) => {
+                      setMultipleAttempt(e.target.checked)
+                      setQuiz({...q, multipleAttempts: e.target.checked})}}
                   />
                   {multipleAttempt ? 
                   
                     <Row className="me-3 d-flex pb-2 align-items-center">
                       <Col className="ms-4"><span className="text-nowrap">How Many Attemps</span></Col>
                       <Col>
-                      <Form.Control type="number" defaultValue={q.maxAttempts}/>
+                      <Form.Control type="number" defaultValue={q.maxAttempts} onChange={(e) => setQuiz({...q, maxAttempts: e.target.value})}/>
                       </Col>
                     </Row>
                     :
@@ -142,14 +158,21 @@ export default function DetailEditor({quizId}: {quizId: string}) {
                   <Form.Check className="ms-2 mt-2 mb-2 text-nowrap"
                               name="showcorrectanswer"
                               label="Let students see the correct answer"
-                              checked={showCorrectAnswer}
-                              onChange={(e) => setShowCorrectAnswer(e.target.checked)}/>
+                              checked={showCorrAnswer}
+                              onChange={(e) => {
+                                setShowCorrectAnswer(e.target.checked)
+                                setQuiz({...q, showCorrectAnswers: e.target.checked})
+                                if (e.target.checked === false) {
+                                  setQuiz({...q, showCorrectAnswersAt: null})
+                                }
+                              }}/>
 
-                  {showCorrectAnswer ? 
+                  {showCorrAnswer ? 
                     <Row className="me-3 d-flex pb-2 align-items-center">
                       <Col className="ms-4">Show Correct Answers at</Col>
                       <Col>
-                        <Form.Control type="date" value={q.showCorrectAnswersAt !== null ? q.showCorrectAnswersAt?.slice(0, 10) : ""}/>
+                        <Form.Control type="date" defaultValue={correctAnswerAt}
+                          onChange={(e) => setQuiz({...q, showCorrectAnswersAt: new Date(e.target.value)})}/>
                       </Col>
                     </Row>
                     :
@@ -160,6 +183,56 @@ export default function DetailEditor({quizId}: {quizId: string}) {
             </Col>
           </Row>
           
+          <Row>
+            <Form.Label sm="4" column className="text-end"></Form.Label>
+            <Col>
+              <Form.Group className="border mt-2">
+                  <Form.Check className="ms-2 mt-2 mb-2 text-nowrap"
+                              name="showonequestion"
+                              label="Show one question at a time"
+                              checked={oneQuestion}
+                              onChange={(e) => {
+                                setOneQuestion(e.target.checked)
+                                setQuiz({...q, oneQuestionPerTime: e.target.checked})
+                                }}/>
+                    
+                </Form.Group>
+            </Col>
+          </Row>
+
+          <Row> 
+            <Form.Label sm="4" column className="text-end">Quiz Restrictions</Form.Label>
+            <Col>
+              <Form.Group className="border mt-2">
+                  <Form.Check className="ms-2 mt-2 mb-2 text-nowrap"
+                              name="accesscode"
+                              label="Require an access code"
+                              checked={accessCodeRequirement}
+                              onChange={(e) => setAccessCodeRequirement(e.target.checked)}/>
+
+                  {accessCodeRequirement ? 
+                    <Row className="me-3 d-flex pb-2 align-items-center">
+                      <Col className="ms-4">
+                        Access Code
+                      </Col>
+                      <Col>
+                        <Form.Control defaultValue={q.accessCode ? q.accessCode : ""} onChange={(e) => setQuiz({...q, accessCode: e.target.value})}/>
+                      </Col>
+                    </Row>  
+
+                    : ""
+                  }
+
+                  <Form.Check className="ms-2 mt-2 mb-2 text-nowrap"
+                              name="webcam"
+                              label="Require a webcam"
+                              checked={webcam}
+                              onChange={(e) => {
+                                setWbecam(e.target.checked)
+                                setQuiz({...q, webcamRequired: e.target.checked})}} />
+              </Form.Group>
+            </Col>
+          </Row>
 
 
           <Row className="mt-2">
@@ -186,7 +259,7 @@ export default function DetailEditor({quizId}: {quizId: string}) {
                   <Form.Label>
                     <b>Due</b>
                   </Form.Label>
-                  <Form.Control type="date" value={q.dueDate?.slice(0, 10)} />
+                  <Form.Control type="date" defaultValue={due} onChange={(e) => setQuiz({...q, dueDate: new Date(e.target.value)})}/>
                 </Form.Group>
 
                 <Row>
@@ -194,13 +267,13 @@ export default function DetailEditor({quizId}: {quizId: string}) {
                     <Form.Label>
                       <b>Available from</b>
                     </Form.Label>
-                    <Form.Control type="date" defaultValue={q.availableFrom?.slice(0, 10)} />
+                    <Form.Control type="date" defaultValue={available} onChange={(e) => setQuiz({...q, availableFrom: new Date(e.target.value)})}/>
                   </Col>
                   <Col className="ps-1" id="wd-available-until">
                     <Form.Label>
                       <b>Until</b>
                     </Form.Label>
-                    <Form.Control type="date" value={q.availableUntil?.slice(0, 10)} />
+                    <Form.Control type="date" defaultValue={until} onChange={(e) => setQuiz({...q, availableUntil: new Date(e.target.value)})}/>
                   </Col>
                 </Row>
               </fieldset>
@@ -210,9 +283,19 @@ export default function DetailEditor({quizId}: {quizId: string}) {
       </Form>
       <hr />
       <div className="float-end me-4">
-        <CancelSaveButton />
+        <div className="mt-2 mb-3">
+            <Link href={`/Courses/${courseId}/Quizzes/${quizId}`} onClick={() => updateQuizWithoutPublish(q)} className="btn btn-danger btn-lg me-1 text-nowrap float-end">
+                Save
+            </Link>
+            <Link href={`/Courses/${courseId}/Quizzes`} onClick={() => updateQuizWithPublish(q)} className="btn btn-secondary btn-lg me-1 text-nowrap float-end">
+                Save and Publish
+            </Link>
+            <Link href={`/Courses/${courseId}/Quizzes`} className="btn btn-secondary btn-lg me-1 text-nowrap float-end">
+                Cancel
+            </Link>
+        </div>
       </div>
-      r
+      
     </div>
   );
 }

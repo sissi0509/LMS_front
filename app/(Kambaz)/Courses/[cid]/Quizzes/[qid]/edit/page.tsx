@@ -5,8 +5,8 @@ import GeneralQuestion from "./GeneralQuestion";
 import { Col, Form, InputGroup, Row, Tab, Tabs } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { RxCross2 } from "react-icons/rx";
-import QuizDetailEditorControl from "./QuizDetailEditorControl";
-import CancelSaveButton from "../../CancelSaveButton";
+// import QuizDetailEditorControl from "./QuizDetailEditorControl";
+// import CancelSaveButton from "../../CancelSaveButton";
 import * as client from "../client";
 import { useParams } from "next/navigation";
 import QuestionNaviButtons from "./QuestionNaviButtons";
@@ -14,6 +14,7 @@ import DetailEditor from "./DetailEditor";
 import { Nav, NavItem, NavLink } from "react-bootstrap";
 
 export default function QuizDetailEditor() {
+  const { cid } = useParams<{ cid: string }>();
   const { qid } = useParams<{ qid: string }>();
   const [questions, setQuestions] = useState<any[]>([]);
   const [showQuestion, setShowQuestion] = useState(false);
@@ -77,7 +78,7 @@ export default function QuizDetailEditor() {
       <Tabs>
         <Tab eventKey="details" title="Details">
           <br />
-          <DetailEditor quizId={qid} />
+          <DetailEditor courseId={cid} quizId={qid} />
         </Tab>
         <Tab eventKey="questions" title="Questions">
           <div>

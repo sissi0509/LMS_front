@@ -33,7 +33,7 @@ export default function QuizDetail({quiz}: {quiz: any}) {
         </Row>
         <Row>
             <Col xs="3" className="text-end">Assignment Group</Col>
-            <Col>{quiz.assignmentGroup ? "Yes" : "No"}</Col>
+            <Col>{quiz.assignmentGroup}</Col>
         </Row>
         <Row>
             <Col xs="3"  className="text-end">Shuffle Answers</Col>
@@ -53,7 +53,11 @@ export default function QuizDetail({quiz}: {quiz: any}) {
         </Row>
         <Row>
             <Col xs="3"  className="text-end">Show Correct Answers</Col>
-            <Col>{quiz.showCorrectAnswersAt ? "Yes" : "No"}</Col>
+            <Col>
+                {quiz.showCorrectAnswers && quiz.showCorrectAnswersAt && <span>{quiz.showCorrectAnswersAt.slice(0, 19)}</span>}
+                {quiz.showCorrectAnswers && quiz.showCorrectAnswersAt === null && <span>Immediately</span>}
+                {quiz.showCorrectAnswers === false && <span>No</span>}
+            </Col>
         </Row>
                         <Row>
             <Col xs="3" className="text-end">One Question at a Time</Col>
