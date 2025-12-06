@@ -12,12 +12,13 @@ export const fetchAllQuestionsForQuiz = async (quizId: string) => {
   return data;
 };
 
-export const updateQuestion = async (
+export const createOrUpdateQuestion = async (
   questionId: string,
-  updatedQuestion: any
+  updatedQuestion: any,
+  quizId: string
 ) => {
-  const { data } = await axiosWithCredentials.put(
-    `${QUESTION_API}/${questionId}`,
+  const { data } = await axiosWithCredentials.post(
+    `${QUIZZES_API}/${quizId}/questions/${questionId}`,
     updatedQuestion
   );
   return data;

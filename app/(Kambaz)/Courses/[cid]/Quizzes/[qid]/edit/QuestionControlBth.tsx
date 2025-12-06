@@ -5,19 +5,18 @@ import * as client from "../client";
 export default function QuestionControlBth({
   idx,
   onSubmit,
+  onCancel,
 }: {
   idx: number;
   onSubmit: any;
+  onCancel: any;
 }) {
   return (
     <div>
-      <Button className="btn-secondary me-2">Cancel</Button>
-      <Button
-        className="btn-danger"
-        onClick={() => {
-          onSubmit(idx);
-        }}
-      >
+      <Button className="btn-secondary me-2" onClick={onCancel}>
+        Cancel
+      </Button>
+      <Button className="btn-danger" onClick={onSubmit}>
         Update Questions
       </Button>
     </div>
