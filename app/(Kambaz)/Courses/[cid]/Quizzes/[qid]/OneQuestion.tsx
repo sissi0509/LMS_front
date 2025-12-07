@@ -48,6 +48,7 @@ export default function OneQuestion({
               defaultValue={studentAnswer?.textAnswer[thisBlank]}
               // defaultValue={studentAnswer?.textAnswer?.[thisBlank] ?? ""}
               // onChange={(e) => handleBlankChange(thisBlank, e.target.value)}
+              disabled
             />
           );
         })}
