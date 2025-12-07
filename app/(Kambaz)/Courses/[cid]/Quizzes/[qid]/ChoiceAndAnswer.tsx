@@ -5,9 +5,11 @@ import { ImArrowRight } from "react-icons/im";
 export default function ChoiceAndAnswer({
   question,
   studentAnswer,
+  showAnswer,
 }: {
   question: any;
   studentAnswer: any;
+  showAnswer: boolean;
 }) {
   const choices = question.choices || [];
   const trueFalseAnswers = [true, false];
@@ -20,9 +22,10 @@ export default function ChoiceAndAnswer({
           <Row key={index} className="align-items-center">
             <hr />
             <Col xs={1}>
-              {choice.toLowerCase() === question.correctChoiceText && (
-                <ImArrowRight />
-              )}
+              {showAnswer &&
+                choice.toLowerCase() === question.correctChoiceText && (
+                  <ImArrowRight />
+                )}
             </Col>
             <Col xs={11}>
               <Form.Check
@@ -44,7 +47,7 @@ export default function ChoiceAndAnswer({
           <Row key={index} className="d-flex align-items-center">
             <hr />
             <Col xs={1}>
-              {choice === question.correctBoolean && (
+              {showAnswer && choice === question.correctBoolean && (
                 <ImArrowRight className="me-2" />
               )}
             </Col>
@@ -61,7 +64,7 @@ export default function ChoiceAndAnswer({
             </Col>
           </Row>
         ))}
-      {question.type === "FILL_BLANK" && (
+      {showAnswer && question.type === "FILL_BLANK" && (
         <div>
           <strong>Acceptable Answers:</strong>
           {answers.map((answerList: string[], blankIdx: number) => (

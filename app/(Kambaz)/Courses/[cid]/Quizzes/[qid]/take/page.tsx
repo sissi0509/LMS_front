@@ -74,44 +74,41 @@ export default function TakePage() {
     setAttempt(userAttempt);
   };
 
-  // const createUpdateAttempt = async () => {
-  //   const today = new Date().toISOString();
-  //   if (quizAttempt.attemptsUsed > 0) {
-  //     const att = quizAttempt.attempt;
-  //     const updated = { ...att, startAt: [...att.startAt, today] };
-  //     const attempt = await client.createOrUpdateAttempt(userId, qid, updated);
-  //     setAttempt(attempt);
-  //   } else {
-  //     const attempt = await client.createOrUpdateAttempt(userId, qid, {
-  //       startAt: [today],
-  //       submittedAt: [],
-  //       score: [],
-  //       answers: [],
-  //     });
-  //     setAttempt(attempt);
-  //   }
-  // };
-
   const handleSubmitAttempt = async (answers: any[]) => {
     if (isPreview) {
-      const score = await clientX.getGrade(answers);
-      console.log("preview score", score);
-      router.push(`/Courses/${cid}/Quizzes/${qid}`);
+      localStorage.removeItem(`quiz-preview-${qid}`);
+      const gradedAns = await clientX.getGrade(answers);
+      console.log("graded", gradedAns);
+
+      const previewData = {
+        userId: currentUser?._id ?? null,
+        quizId: qid,
+        answers: gradedAns.gradedAnswers,
+        score: gradedAns.totalScore,
+        savedAt: new Date().toISOString(),
+      };
+
+      localStorage.setItem(`quiz-preview-${qid}`, JSON.stringify(previewData));
+      // localStorage.setItem("quiz-answers", JSON.stringify(answers));
+      // localStorage.setItem("quiz-score", score);
+      // console.log("preview score", score);
+      // router.push(`/Courses/${cid}/Quizzes/${qid}`);
+    } else {
+      const today = new Date().toISOString();
+      const att = attempt.attempt;
+      const updated = {
+        ...att,
+        submittedAt: [...att.submittedAt, today],
+        answers: answers,
+      };
+      const savedAttempt = await clientE.createOrUpdateAttempt(
+        updated.user,
+        qid,
+        updated
+      );
+      setAttempt(savedAttempt);
+      console.log("Saved Attempt:", savedAttempt);
     }
-    const today = new Date().toISOString();
-    const att = attempt.attempt;
-    const updated = {
-      ...att,
-      submittedAt: [...att.submittedAt, today],
-      answers: answers,
-    };
-    const savedAttempt = await clientE.createOrUpdateAttempt(
-      updated.user,
-      qid,
-      updated
-    );
-    setAttempt(savedAttempt);
-    console.log("Saved Attempt:", savedAttempt);
     router.push(`/Courses/${cid}/Quizzes/${qid}`);
   };
 

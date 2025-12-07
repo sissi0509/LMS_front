@@ -4,22 +4,55 @@ import * as clientX from "./client";
 import * as clientE from "../../../client";
 import { useParams } from "next/navigation";
 import OneQuestion from "./OneQuestion";
+import { RootState } from "../../../../store";
+import { useSelector } from "react-redux";
+import Link from "next/link";
+import { DiVim } from "react-icons/di";
 
-export default function PreviewQuestions({ userId }: { userId: string }) {
-  const { qid } = useParams<{ qid: string }>();
+export default function PreviewQuestions({
+  userId,
+  showAnswer,
+  maxAttemptsAllowed,
+}: {
+  userId: string;
+  showAnswer: boolean;
+  maxAttemptsAllowed: any;
+}) {
+  const { qid, cid } = useParams<{ qid: string; cid: string }>();
   const [questions, setQuestions] = useState<any[]>([]);
   const [studentAns, setStudentAns] = useState<any[]>([]);
+  const [quizAttempt, setAttempt] = useState<any>({});
+  const [profScore, setProfScore] = useState(0);
+
+  const { currentUser } = useSelector(
+    (state: RootState) => state.accountReducer
+  );
   const fetchAllQuestionsForQuiz = async () => {
     const questionsFromDB = await clientX.fetchAllQuestionsForQuiz(qid);
     setQuestions(questionsFromDB);
   };
 
   const fetchAttempt = async () => {
-    const userAttempt = await clientE.getUserQuizAttempt(qid, userId);
-    const ans = userAttempt.attempt.answers;
+    let ans;
+    if (currentUser?.role === "FACULTY") {
+      const raw = localStorage.getItem(`quiz-preview-${qid}`);
 
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data.userId === currentUser?._id) {
+          ans = data.answers;
+          const score = data.score;
+          setProfScore(score);
+        } else {
+          ans = [];
+        }
+      }
+    } else {
+      const userAttempt = await clientE.getUserQuizAttempt(qid, userId);
+      setAttempt(userAttempt);
+      ans = userAttempt.attempt.answers;
+    }
     setStudentAns(ans);
-    console.log("vv userAttempt", ans);
   };
 
   useEffect(() => {
@@ -34,9 +67,22 @@ export default function PreviewQuestions({ userId }: { userId: string }) {
 
   return (
     <div>
-      {questions.map((q, i) => (
-        <OneQuestion key={i} question={q} studentAnswer={studentAns[i]} />
-      ))}
+      {currentUser?.role === "FACULTY" && <div>Total Score: {profScore}</div>}
+      {(currentUser?.role === "FACULTY" ||
+        (quizAttempt && quizAttempt.attemptsUsed >= maxAttemptsAllowed)) &&
+        questions.map((q, i) => (
+          <OneQuestion
+            key={i}
+            question={q}
+            studentAnswer={studentAns[i]}
+            showAnswer={showAnswer}
+          />
+        ))}
+      {currentUser?.role === "FACULTY" && (
+        <Link href={`/Courses/${cid}/Quizzes/${qid}/edit`}>
+          Continue to Edit
+        </Link>
+      )}
     </div>
   );
 }

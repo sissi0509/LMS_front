@@ -19,6 +19,8 @@ import QuizDetail from "./QuizDetail";
 import { useEffect, useState } from "react";
 import * as client from "../../../client";
 import PreviewQuestions from "./PreviewQuestions";
+import Link from "next/link";
+import { configureStore } from "@reduxjs/toolkit";
 
 export default function QuizDetailsScreen() {
   const { cid, qid } = useParams();
@@ -33,6 +35,20 @@ export default function QuizDetailsScreen() {
     const newQuiz = await client.getQuizById(qid as string);
     setQuiz(newQuiz);
   };
+
+  const now = new Date();
+  const showCorrectAnswersAtDate = quiz.showCorrectAnswersAt
+    ? new Date(quiz.showCorrectAnswersAt)
+    : null;
+
+  const conRevealForStu = Boolean(
+    quiz.showCorrectAnswers &&
+      (showCorrectAnswersAtDate === null || showCorrectAnswersAtDate <= now)
+  );
+
+  const showAnswer = Boolean(
+    currentUser?.role === "FACULTY" || conRevealForStu
+  );
 
   const getQuizTotal = async () => {
     const total = await client.findQuizPoints(qid as string);
@@ -61,7 +77,17 @@ export default function QuizDetailsScreen() {
           />
         </div>
       )}
-      <PreviewQuestions userId={currentUser?._id ? currentUser._id : ""} />
+      <PreviewQuestions
+        userId={currentUser?._id ? currentUser._id : ""}
+        showAnswer={showAnswer}
+        maxAttemptsAllowed={quiz.maxAttempts}
+      />
+      <Link
+        href={`/Courses/${cid}/Quizzes/`}
+        className="btn btn-secondary btn-lg"
+      >
+        Previous
+      </Link>
     </div>
   );
 }

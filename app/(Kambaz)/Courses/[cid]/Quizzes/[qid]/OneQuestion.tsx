@@ -6,9 +6,11 @@ import ChoiceAndAnswer from "./ChoiceAndAnswer";
 export default function OneQuestion({
   question,
   studentAnswer,
+  showAnswer,
 }: {
   question: any;
   studentAnswer: any;
+  showAnswer: boolean;
 }) {
   const renderFillBlankQuestion = () => {
     const text = question.question || "";
@@ -60,7 +62,8 @@ export default function OneQuestion({
     <div className="border rounded me-2 mt-2">
       <div className="p-3 ps-2 bg-secondary d-flex justify-content-between">
         <div className="ms-2">{question.title}</div>
-        <div>{question.points} pts</div>
+        <div>{`${studentAnswer.pointsAwarded}/${question.points} pts`}</div>
+        {/* <div>{question.points} pts</div> */}
       </div>
       <div className="p-3 d-flex justify-content-between">
         <div>
@@ -70,7 +73,11 @@ export default function OneQuestion({
         </div>
       </div>
       <div className="p-3">
-        <ChoiceAndAnswer question={question} studentAnswer={studentAnswer} />
+        <ChoiceAndAnswer
+          question={question}
+          studentAnswer={studentAnswer}
+          showAnswer={showAnswer}
+        />
       </div>
     </div>
   );
