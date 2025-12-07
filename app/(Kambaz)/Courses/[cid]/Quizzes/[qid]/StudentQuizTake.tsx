@@ -86,7 +86,9 @@ export default function StudentQuizTake({cid, qid, userId}: {cid: string, qid: s
           <Button className="btn-danger rounded-1" href={`/Courses/${cid}/Quizzes/${quiz._id}/take`}
             onClick={async (e) => {
               e.preventDefault()
-              await createUpdateAttempt()
+              if (quiz.accessCode) {
+                await createUpdateAttempt()
+              }
               window.location.href = `/Courses/${cid}/Quizzes/${quiz._id}/take`
 
 
@@ -106,7 +108,9 @@ export default function StudentQuizTake({cid, qid, userId}: {cid: string, qid: s
             <Button className="btn-danger rounded-1" href={`/Courses/${cid}/Quizzes/${quiz._id}/take`}
               onClick={async (e) => {
               e.preventDefault()
-              await createUpdateAttempt()
+              if (quiz.accessCode) {
+                await createUpdateAttempt()
+              }
               window.location.href = `/Courses/${cid}/Quizzes/${quiz._id}/take`
 
 

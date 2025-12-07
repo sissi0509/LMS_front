@@ -68,7 +68,7 @@ export default function QuizDetailsScreen() {
         <div>
           <QuizDetailControl courseId={cid as string} quizId={qid as string} />
           <hr />
-          <QuizDetail courseId={cid as string} quizId={qid as string} />
+          <QuizDetail courseId={cid as string} quiz={quiz} />
         </div>
       ) : (
         <div>
