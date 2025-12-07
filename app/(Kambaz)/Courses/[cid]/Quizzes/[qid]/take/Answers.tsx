@@ -54,22 +54,6 @@ export default function Answers({
             }
           />
         ))}
-      {/* {question.type === "FILL_BLANK" && (
-        <div>
-          <strong>Your Answer:</strong>
-          <input
-            className="ms-2"
-            type="text"
-            value={studentAnswer?.textAnswer ?? ""}
-            onChange={(e) =>
-              onChange(qIdx, {
-                ...studentAnswer,
-                textAnswer: e.target.value,
-              })
-            }
-          />
-        </div>
-      )} */}
     </div>
   );
 }

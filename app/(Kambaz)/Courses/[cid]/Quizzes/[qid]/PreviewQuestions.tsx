@@ -2,12 +2,11 @@
 import React, { useEffect, useState } from "react";
 import * as clientX from "./client";
 import * as clientE from "../../../client";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import OneQuestion from "./OneQuestion";
 import { RootState } from "../../../../store";
 import { useSelector } from "react-redux";
 import Link from "next/link";
-import { DiVim } from "react-icons/di";
 
 export default function PreviewQuestions({
   userId,
@@ -23,6 +22,10 @@ export default function PreviewQuestions({
   const [studentAns, setStudentAns] = useState<any[]>([]);
   const [quizAttempt, setAttempt] = useState<any>({});
   const [profScore, setProfScore] = useState(0);
+
+  const searchParams = useSearchParams();
+
+  const isPreview = searchParams.get("preview") === "1";
 
   const { currentUser } = useSelector(
     (state: RootState) => state.accountReducer
@@ -61,14 +64,16 @@ export default function PreviewQuestions({
     // setCurrentIndex(0);
   }, []);
 
-  if (!studentAns) {
+  if (!studentAns && !isPreview) {
     return <div>loading.....</div>;
   }
 
   return (
     <div>
-      {currentUser?.role === "FACULTY" && <div>Total Score: {profScore}</div>}
-      {(currentUser?.role === "FACULTY" ||
+      {currentUser?.role === "FACULTY" && isPreview && (
+        <div>Total Score: {profScore}</div>
+      )}
+      {((currentUser?.role === "FACULTY" && isPreview) ||
         (quizAttempt && quizAttempt.attemptsUsed >= maxAttemptsAllowed)) &&
         questions.map((q, i) => (
           <OneQuestion
@@ -78,7 +83,7 @@ export default function PreviewQuestions({
             showAnswer={showAnswer}
           />
         ))}
-      {currentUser?.role === "FACULTY" && (
+      {currentUser?.role === "FACULTY" && isPreview && (
         <Link href={`/Courses/${cid}/Quizzes/${qid}/edit`}>
           Continue to Edit
         </Link>

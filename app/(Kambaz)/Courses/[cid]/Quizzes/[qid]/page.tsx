@@ -11,7 +11,7 @@ import {
 import { FaEllipsisVertical } from "react-icons/fa6";
 import { MdDoNotDisturb } from "react-icons/md";
 import QuizDetailControl from "./QuizDetailControl";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import StudentQuizTake from "./StudentQuizTake";
@@ -22,7 +22,6 @@ import PreviewQuestions from "./PreviewQuestions";
 import Link from "next/link";
 import { configureStore } from "@reduxjs/toolkit";
 import StudentQuizAttemptHistory from "./StudentQuizAttemptHistory";
-
 
 export default function QuizDetailsScreen() {
   const { cid, qid } = useParams();

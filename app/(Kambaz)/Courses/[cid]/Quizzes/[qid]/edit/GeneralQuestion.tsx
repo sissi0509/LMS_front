@@ -38,6 +38,33 @@ export default function GeneralQuestion({
     setIsEditing(false);
   };
 
+  const renderFillBlankQuestion = () => {
+    const text = question.question || "";
+    const parts = text.split(/(\[\[[^[\]]+\]\])/);
+    let blankCounter = 0;
+    return (
+      <div>
+        {parts.map((part: any) => {
+          const isBlank = part.startsWith("[[") && part.endsWith("]]");
+
+          if (!isBlank) return part;
+
+          const thisBlank = blankCounter++;
+          return (
+            <input
+              key={`blank-${thisBlank}`}
+              type="text"
+              className="mx-1"
+              style={{ minWidth: "80px" }}
+              defaultValue=""
+              disabled
+            />
+          );
+        })}
+      </div>
+    );
+  };
+
   useEffect(() => {
     setCurrentQuestion(question);
   }, [question]);
@@ -56,7 +83,11 @@ export default function GeneralQuestion({
           </div>
 
           <div className="p-3 d-flex justify-content-between">
-            <div>{currentQuestion.question}</div>
+            <div>
+              {question.type === "FILL_BLANK"
+                ? renderFillBlankQuestion()
+                : question.question}
+            </div>
             <div>
               <GiPencil onClick={() => setIsEditing(true)} />
               <RxCross2 onClick={() => onDelete(currentQuestion._id)} />

@@ -26,10 +26,11 @@ export default function TakePage() {
     const questionsFromDB = await clientX.fetchAllQuestionsForQuiz(qid);
     if (quiz.shuffleAnswers) {
       const shuffled = questionsFromDB.map((q: any) => {
-        if (q.type === "MCQ") {
-          q.choices = shuffleArray(q.choices);
-        }
-        return q;
+        if (q.type !== "MCQ") return q;
+        return {
+          ...q,
+          choices: shuffleArray(q.choices),
+        };
       });
       setQuestions(shuffled);
     } else {
@@ -39,30 +40,13 @@ export default function TakePage() {
 
   const shuffleArray = (arr: any[]) => {
     const copy = [...arr];
-    const len = copy.length;
-    for (let i = 0; i < len; i++) {
-      const j = Math.floor(Math.random() * len);
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
       [copy[i], copy[j]] = [copy[j], copy[i]];
     }
     return copy;
   };
 
-  const shuffleQuestionChoices = (q: any) => {
-    if (q.type !== "MCQ") return q;
-
-    const originalChoices = q.choices;
-    const originalCorrectIndex = q.correctChoiceIndex;
-    const indices = originalChoices.map((_: any, i: number) => i);
-    const shuffledIndices = shuffleArray(indices);
-    const newChoices = shuffledIndices.map((i) => originalChoices[i]);
-    const newCorrectIndex = shuffledIndices.indexOf(originalCorrectIndex);
-
-    return {
-      ...q,
-      choices: newChoices,
-      correctChoiceIndex: newCorrectIndex,
-    };
-  };
   const fetchQuiz = async () => {
     const newQuiz = await clientE.getQuizById(qid);
     setQuiz(newQuiz);
@@ -92,7 +76,7 @@ export default function TakePage() {
       // localStorage.setItem("quiz-answers", JSON.stringify(answers));
       // localStorage.setItem("quiz-score", score);
       // console.log("preview score", score);
-      // router.push(`/Courses/${cid}/Quizzes/${qid}`);
+      router.push(`/Courses/${cid}/Quizzes/${qid}?preview=1`);
     } else {
       const today = new Date().toISOString();
       const att = attempt.attempt;
@@ -107,16 +91,20 @@ export default function TakePage() {
         updated
       );
       setAttempt(savedAttempt);
-      console.log("Saved Attempt:", savedAttempt);
+      // console.log("Saved Attempt:", savedAttempt);
+      router.push(`/Courses/${cid}/Quizzes/${qid}`);
     }
-    router.push(`/Courses/${cid}/Quizzes/${qid}`);
   };
 
   useEffect(() => {
-    fetchAllQuestionsForQuiz();
     fetchQuiz();
     fetchAttempt();
   }, [qid]);
+
+  useEffect(() => {
+    if (!quiz) return;
+    fetchAllQuestionsForQuiz();
+  }, [qid, quiz.shuffleAnswers]);
 
   if (!questions || questions.length === 0) {
     return <div>Loading questions...</div>;

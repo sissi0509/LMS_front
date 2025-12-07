@@ -1,5 +1,6 @@
 import React from "react";
 import { Col, Form, Row } from "react-bootstrap";
+import { FcCheckmark } from "react-icons/fc";
 import { ImArrowRight } from "react-icons/im";
 
 export default function DetailAnswers({ question }: { question: any }) {
@@ -15,7 +16,7 @@ export default function DetailAnswers({ question }: { question: any }) {
             <hr />
             <Col xs={1}>
               {choice.toLowerCase() === question.correctChoiceText && (
-                <ImArrowRight />
+                <FcCheckmark />
               )}
             </Col>
             <Col xs={11}>
@@ -37,7 +38,7 @@ export default function DetailAnswers({ question }: { question: any }) {
             <hr />
             <Col xs={1}>
               {choice === question.correctBoolean && (
-                <ImArrowRight className="me-2" />
+                <FcCheckmark className="me-2" />
               )}
             </Col>
             <Col xs={11}>
@@ -55,6 +56,7 @@ export default function DetailAnswers({ question }: { question: any }) {
         ))}
       {question.type === "FILL_BLANK" && (
         <div>
+          <hr />
           <strong>Acceptable Answers:</strong>
           {answers.map((answerList: string[], blankIdx: number) => (
             <div key={blankIdx} className="mb-2">

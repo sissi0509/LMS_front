@@ -107,7 +107,6 @@ export default function Questions({
       <Button
         className="btn-danger mt-3 float-end"
         onClick={() => {
-          console.log("!!!!!!!!!", studentAns);
           onSubmit(studentAns);
         }}
       >
