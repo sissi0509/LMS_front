@@ -26,11 +26,11 @@ export default function Answers({
             name={String(qIdx)}
             label={choice}
             className="mb-2"
-            checked={index === studentAnswer?.selectedChoiceIndex}
+            checked={choice === studentAnswer?.selectedChoiceText}
             onChange={() =>
               onChange(qIdx, {
                 ...studentAnswer,
-                selectedChoiceIndex: index,
+                selectedChoiceText: choice,
               })
             }
           />

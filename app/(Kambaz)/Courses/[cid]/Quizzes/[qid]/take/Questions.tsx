@@ -5,10 +5,12 @@ import { Button } from "react-bootstrap";
 
 export default function Questions({
   questions,
-  onePertime,
+  onePerTime,
+  onSubmit,
 }: {
   questions: any;
-  onePertime: boolean;
+  onePerTime: boolean;
+  onSubmit: any;
 }) {
   const [studentAns, setStudentAns] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -32,7 +34,7 @@ export default function Questions({
   }, [questions]);
   return (
     <div>
-      {onePertime && (
+      {onePerTime && (
         <>
           <OneQuestion
             key={currentIndex}
@@ -60,7 +62,7 @@ export default function Questions({
           </div>
         </>
       )}
-      {!onePertime &&
+      {!onePerTime &&
         questions.map((q: any, i: number) => (
           <OneQuestion
             key={i}
@@ -74,6 +76,7 @@ export default function Questions({
         className="btn-danger mt-3 float-end"
         onClick={() => {
           console.log(studentAns);
+          onSubmit(studentAns);
         }}
       >
         Submit

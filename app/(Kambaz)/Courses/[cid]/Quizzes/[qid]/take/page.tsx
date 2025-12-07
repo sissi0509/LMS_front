@@ -8,11 +8,15 @@ import QuizDescription from "./QuizDescription";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../store";
 
-
 export default function TakePage() {
-  const { qid } = useParams<{ qid: string }>();
+  const { qid, cid } = useParams<{ qid: string; cid: string }>();
+  const { currentUser } = useSelector(
+    (state: RootState) => state.accountReducer
+  );
+  const [attempt, setAttempt] = useState<any>({});
   const [questions, setQuestions] = useState<any[]>([]);
   const [quiz, setQuiz] = useState<any>({});
+  const router = useRouter();
 
   const fetchAllQuestionsForQuiz = async () => {
     const questionsFromDB = await clientX.fetchAllQuestionsForQuiz(qid);
@@ -28,6 +32,7 @@ export default function TakePage() {
       setQuestions(questionsFromDB);
     }
   };
+
   const shuffleArray = (arr: any[]) => {
     const copy = [...arr];
     const len = copy.length;
@@ -59,15 +64,47 @@ export default function TakePage() {
     setQuiz(newQuiz);
   };
 
-  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
-  const [attempt, setAttempt] = useState<any>({})
-
   const fetchAttempt = async () => {
-    const userId = currentUser?._id ? currentUser._id : ""
-    console.log(userId)
-    const userAttempt = await clientE.getUserQuizAttempt(qid, userId)
+    const userId = currentUser?._id ? currentUser._id : "";
+    const userAttempt = await clientE.getUserQuizAttempt(qid, userId);
     setAttempt(userAttempt);
-  }
+  };
+
+  // const createUpdateAttempt = async () => {
+  //   const today = new Date().toISOString();
+  //   if (quizAttempt.attemptsUsed > 0) {
+  //     const att = quizAttempt.attempt;
+  //     const updated = { ...att, startAt: [...att.startAt, today] };
+  //     const attempt = await client.createOrUpdateAttempt(userId, qid, updated);
+  //     setAttempt(attempt);
+  //   } else {
+  //     const attempt = await client.createOrUpdateAttempt(userId, qid, {
+  //       startAt: [today],
+  //       submittedAt: [],
+  //       score: [],
+  //       answers: [],
+  //     });
+  //     setAttempt(attempt);
+  //   }
+  // };
+
+  const handleSubmitAttempt = async (answers: any[]) => {
+    const today = new Date().toISOString();
+    const att = attempt.attempt;
+    const updated = {
+      ...att,
+      submittedAt: [...att.submittedAt, today],
+      answers: answers,
+    };
+    const savedAttempt = await clientE.createOrUpdateAttempt(
+      updated.user,
+      qid,
+      updated
+    );
+    setAttempt(savedAttempt);
+    console.log("Saved Attempt:", savedAttempt);
+    router.push(`/Courses/${cid}/Quizzes/${qid}`);
+  };
 
   useEffect(() => {
     fetchAllQuestionsForQuiz();
@@ -81,9 +118,15 @@ export default function TakePage() {
 
   return (
     <div>
-      <QuizDescription quizId={qid} userId={currentUser ? currentUser._id : ""}/>
-      <Questions questions={questions} onePertime={quiz.oneQuestionPerTime} />
-
+      <QuizDescription
+        quizId={qid}
+        userId={currentUser ? currentUser._id : ""}
+      />
+      <Questions
+        questions={questions}
+        onePerTime={quiz.oneQuestionPerTime}
+        onSubmit={handleSubmitAttempt}
+      />
     </div>
   );
 }

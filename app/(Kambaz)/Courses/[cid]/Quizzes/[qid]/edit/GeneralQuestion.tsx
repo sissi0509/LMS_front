@@ -45,7 +45,7 @@ export default function GeneralQuestion({
   return (
     <div>
       {!isEditing && (
-        <div className="border rounded me-2 mt-2">
+        <div className="border rounded me-2 mb-2 mt-2">
           <div className="p-3 ps-2 bg-secondary d-flex justify-content-between">
             <div>
               <BsGripVertical className="me-2" />
@@ -71,7 +71,7 @@ export default function GeneralQuestion({
       )}
 
       {isEditing && (
-        <div className="border">
+        <div className="border me-2 mb-2">
           <div className="p-2">
             <EditorHeader
               question={currentQuestion}
