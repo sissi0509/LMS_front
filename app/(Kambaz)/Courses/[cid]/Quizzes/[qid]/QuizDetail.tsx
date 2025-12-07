@@ -6,18 +6,11 @@ import Link from "next/link";
 
 export default function QuizDetail({
   courseId,
-  quizId,
+  quiz
 }: {
   courseId: string;
-  quizId: string;
+  quiz: any
 }) {
-  const [quiz, setQuiz] = useState<any>({});
-
-  const fetchQuiz = async () => {
-    const specificQuiz = await client.getQuizById(quizId);
-    const point = await client.findQuizPoints(quizId);
-    setQuiz({ ...specificQuiz, points: point });
-  };
 
   const getTime = (date: string) => {
     const dateObj = new Date(date);
@@ -48,9 +41,9 @@ export default function QuizDetail({
     return `${dateS} at ${t}${z}`;
   };
 
-  useEffect(() => {
-    fetchQuiz();
-  }, []);
+  if (!quiz) {
+    return <div>loading...</div>
+  }
 
   console.log(quiz.accessCode);
 

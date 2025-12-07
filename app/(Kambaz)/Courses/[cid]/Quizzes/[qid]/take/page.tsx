@@ -7,7 +7,7 @@ import * as clientE from "../../../../client";
 import QuizDescription from "./QuizDescription";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../store";
-
+import QuizAccessCode from "./QuizAccessCode";
 export default function TakePage() {
   const { qid, cid } = useParams<{ qid: string; cid: string }>();
   const { currentUser } = useSelector(
@@ -47,9 +47,29 @@ export default function TakePage() {
     return copy;
   };
 
+  const shuffleQuestionChoices = (q: any) => {
+    if (q.type !== "MCQ") return q;
+
+    const originalChoices = q.choices;
+    const originalCorrectIndex = q.correctChoiceIndex;
+    const indices = originalChoices.map((_: any, i: number) => i);
+    const shuffledIndices = shuffleArray(indices);
+    const newChoices = shuffledIndices.map((i) => originalChoices[i]);
+    const newCorrectIndex = shuffledIndices.indexOf(originalCorrectIndex);
+
+    return {
+      ...q,
+      choices: newChoices,
+      correctChoiceIndex: newCorrectIndex,
+    };
+  };
+
+  const [showCodePrompt, setShowCodePrompt] = useState(true)
+
   const fetchQuiz = async () => {
     const newQuiz = await clientE.getQuizById(qid);
     setQuiz(newQuiz);
+    setShowCodePrompt(newQuiz.accessCode && currentUser?.role !== "FACULTY" ? true : false)
   };
 
   const fetchAttempt = async () => {
@@ -57,6 +77,19 @@ export default function TakePage() {
     const userAttempt = await clientE.getUserQuizAttempt(qid, userId);
     setAttempt(userAttempt);
   };
+
+  const createUpdateAttempt = async () => {
+      const today = new Date().toISOString()
+      if (attempt.attemptsUsed > 0) {
+        const att: any = attempt.attempt;
+        const updated = {...att, startAt: [...att.startAt, today]}
+        const newAtt = await clientE.createOrUpdateAttempt(currentUser?._id ? currentUser?._id : "" , qid, updated)
+        setAttempt(attempt);
+      } else {
+        const attempt = await clientE.createOrUpdateAttempt(currentUser?._id ? currentUser?._id : "", qid, {startAt: [today], submittedAt: [], score: [], answers: []})
+        setAttempt(attempt);
+      }
+    }
 
   const handleSubmitAttempt = async (answers: any[]) => {
     if (isPreview) {
@@ -96,6 +129,7 @@ export default function TakePage() {
     }
   };
 
+
   useEffect(() => {
     fetchQuiz();
     fetchAttempt();
@@ -109,18 +143,26 @@ export default function TakePage() {
   if (!questions || questions.length === 0) {
     return <div>Loading questions...</div>;
   }
+  console.log(showCodePrompt)
 
   return (
     <div>
-      <QuizDescription
-        quiz={quiz}
-        userId={currentUser ? currentUser._id : ""}
-      />
-      <Questions
-        questions={questions}
-        onePerTime={quiz.oneQuestionPerTime}
-        onSubmit={handleSubmitAttempt}
-      />
+
+      {showCodePrompt && <QuizAccessCode quiz={quiz} setPromt={setShowCodePrompt} />}
+
+      {(showCodePrompt === false &&
+        <div>
+        <QuizDescription
+          quiz={quiz}
+          userId={currentUser ? currentUser._id : ""}
+        />
+        <Questions
+          questions={questions}
+          onePerTime={quiz.oneQuestionPerTime}
+          onSubmit={handleSubmitAttempt}
+        />
+      </div>
+      )}
     </div>
   );
 }
