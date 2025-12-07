@@ -54,7 +54,7 @@ export default function Answers({
             }
           />
         ))}
-      {question.type === "FILL_BLANK" && (
+      {/* {question.type === "FILL_BLANK" && (
         <div>
           <strong>Your Answer:</strong>
           <input
@@ -69,7 +69,7 @@ export default function Answers({
             }
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 }

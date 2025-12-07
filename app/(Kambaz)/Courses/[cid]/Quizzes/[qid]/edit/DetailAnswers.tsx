@@ -1,5 +1,6 @@
 import React from "react";
 import { Form } from "react-bootstrap";
+import { DiVim } from "react-icons/di";
 
 export default function DetailAnswers({ question }: { question: any }) {
   const choices = question.choices || [];
@@ -36,8 +37,16 @@ export default function DetailAnswers({ question }: { question: any }) {
       {question.type === "FILL_BLANK" && (
         <div>
           <strong>Acceptable Answers:</strong>
-          {answers.map((choice: string, index: number) => (
-            <div key={index}>{choice}</div>
+          {answers.map((answerList: string[], blankIdx: number) => (
+            <div key={blankIdx} className="mb-2">
+              <div className="fw-semibold">{`Blank ${blankIdx + 1}:`}</div>
+
+              {answerList.map((ans, ansIdx) => (
+                <div key={ansIdx} className="ms-3">
+                  - {ans}
+                </div>
+              ))}
+            </div>
           ))}
         </div>
       )}

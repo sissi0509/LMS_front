@@ -12,11 +12,18 @@ export default function EditorQuestion({
   question: any;
   onChange: any;
 }) {
+  const mcqPrompt =
+    " Enter your question and multiple answers, then select the one correct answer.";
+  const trueFalsePrompt =
+    "Enter your question text, then select if True of False is the correct answer.";
+  const fillBlankPrompt =
+    "Enter your question text. Use [[blankName]] to mark each blank, for example: '2 + 2 = [[q1]], 2 - 2 = [[q2]].' Then define possible answers for each blank below.";
   return (
     <div className="wb-quiz-editor-question">
       <div className="mb-3">
-        Enter your question and multiple answers, then select the one correct
-        answer.
+        {question.type === "MCQ" && mcqPrompt}
+        {question.type === "TRUE_FALSE" && trueFalsePrompt}
+        {question.type === "FILL_BLANK" && fillBlankPrompt}
       </div>
       <h5 className="mb-2 fw-bold">Question</h5>
 

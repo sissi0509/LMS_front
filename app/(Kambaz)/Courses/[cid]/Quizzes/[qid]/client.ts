@@ -41,3 +41,11 @@ export const fetchAttempt = async (userId: string, quizId: string) => {
   );
   return data;
 };
+
+export const getGrade = async (answers: any) => {
+  const { data } = await axiosWithCredentials.post(
+    `${QUIZZES_API}/grade`,
+    answers
+  );
+  return data;
+};

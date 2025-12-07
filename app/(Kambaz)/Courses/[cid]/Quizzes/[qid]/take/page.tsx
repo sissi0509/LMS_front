@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Questions from "./Questions";
 import * as clientX from "../client";
 import * as clientE from "../../../../client";
@@ -13,10 +13,14 @@ export default function TakePage() {
   const { currentUser } = useSelector(
     (state: RootState) => state.accountReducer
   );
+
   const [attempt, setAttempt] = useState<any>({});
   const [questions, setQuestions] = useState<any[]>([]);
   const [quiz, setQuiz] = useState<any>({});
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const isPreview = searchParams.get("preview") === "1";
 
   const fetchAllQuestionsForQuiz = async () => {
     const questionsFromDB = await clientX.fetchAllQuestionsForQuiz(qid);
@@ -89,6 +93,11 @@ export default function TakePage() {
   // };
 
   const handleSubmitAttempt = async (answers: any[]) => {
+    if (isPreview) {
+      const score = await clientX.getGrade(answers);
+      console.log("preview score", score);
+      router.push(`/Courses/${cid}/Quizzes/${qid}`);
+    }
     const today = new Date().toISOString();
     const att = attempt.attempt;
     const updated = {

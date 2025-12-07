@@ -104,7 +104,6 @@ export default function GeneralQuestion({
           {currentQuestion.type === "FILL_BLANK" && (
             <div className="p-3">
               <FillBlankAnswer
-                idx={idx}
                 question={currentQuestion}
                 onChange={setCurrentQuestion}
               />

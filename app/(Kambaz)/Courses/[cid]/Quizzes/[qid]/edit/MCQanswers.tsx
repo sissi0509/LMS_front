@@ -98,7 +98,8 @@ export default function MCQanswers({
         <a
           href="#"
           className="link-danger link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             addChoice();
           }}
         >

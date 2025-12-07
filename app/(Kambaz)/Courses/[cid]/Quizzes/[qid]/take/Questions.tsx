@@ -12,26 +12,58 @@ export default function Questions({
   onePerTime: boolean;
   onSubmit: any;
 }) {
-  const [studentAns, setStudentAns] = useState([]);
+  const [studentAns, setStudentAns] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // const handleUpdateAns = (index: number, updated: any) => {
+  //   setStudentAns((prev: any) =>
+  //     prev.map((a: any, i: number) => (i === index ? updated : a))
+  //   );
+
+  // };
+  // const handleUpdateAns = (index: number, updated: any) => {
+  //   setStudentAns((prev: any) => {
+  //     const copy = [...prev];
+
+  //     // If this question's answer hasn't been created yet, insert it:
+  //     copy[index] = {
+  //       ...(copy[index] || {}), // keep any existing fields
+  //       ...updated, // update with new data
+  //     };
+
+  //     return copy;
+  //   });
+  // };
   const handleUpdateAns = (index: number, updated: any) => {
-    setStudentAns((prev: any) =>
-      prev.map((a: any, i: number) => (i === index ? updated : a))
-    );
+    setStudentAns((prev: any) => {
+      const copy = [...prev];
+      copy[index] = updated;
+      return copy;
+    });
   };
 
-  const initial = questions.map((q: any) => ({
-    question: q._id,
-    selectedChoiceIndex: null,
-    selectedBoolean: null,
-    textAnswer: "",
-  }));
+  const initial = questions.map((q: any) => {
+    // const matches = q.question.match(/\[\[([^[\]]+)\]\]/g);
+    // const blankCount = matches ? matches.length : 0;
+
+    return {
+      question: q._id,
+      selectedChoiceIndex: null,
+      selectedBoolean: null,
+      // textAnswer: Array(blankCount).fill(""),
+      textAnswer: [],
+    };
+  });
 
   useEffect(() => {
     setStudentAns(initial);
     setCurrentIndex(0);
   }, [questions]);
+  // useEffect(() => {
+  //   if (studentAns.length === 0) {
+  //     setStudentAns(initial);
+  //   }
+  // }, [questions]);
   return (
     <div>
       {onePerTime && (
@@ -75,7 +107,7 @@ export default function Questions({
       <Button
         className="btn-danger mt-3 float-end"
         onClick={() => {
-          console.log(studentAns);
+          console.log("!!!!!!!!!", studentAns);
           onSubmit(studentAns);
         }}
       >
