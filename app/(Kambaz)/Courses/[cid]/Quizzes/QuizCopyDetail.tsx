@@ -5,7 +5,8 @@ import { RootState } from "../../../store";
 import { Alert, Button, Dropdown, FormControl } from 'react-bootstrap';
 import Link from 'next/link';
 
-export default function QuizCopyDetail({quiz, setShow, showStatus} : {quiz: any; setShow: (show: boolean) => void; showStatus: boolean}) {
+export default function QuizCopyDetail({quiz, cid, setShow, showStatus, fetchQuizzes} : 
+  {quiz: any; cid: string; setShow: (show: boolean) => void; showStatus: boolean; fetchQuizzes: (cid: string) => void}) {
 
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
 
@@ -20,10 +21,12 @@ export default function QuizCopyDetail({quiz, setShow, showStatus} : {quiz: any;
     if (courseId === "Show my Courses") {
       return
     }
-
     await client.copyQuiz(courseId, quizId)
-
+    if (courseId === cid) {
+      fetchQuizzes(cid)
+    }
   }
+
 
   const fetchMyCourses = async () => {
     const courses = await client.findMyCourses()
