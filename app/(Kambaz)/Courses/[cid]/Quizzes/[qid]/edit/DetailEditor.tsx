@@ -6,7 +6,6 @@ import { Button, Col, Dropdown, Form, InputGroup, Row } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { RxCross2 } from "react-icons/rx";
 // import QuizDetailEditorControl from "./QuizDetailEditorControl";
-import QuizQuestionsEditor from "./QuizQuestionsEditor";
 // import CancelSaveButton from "../../CancelSaveButton";
 import * as client from "../../../../client";
 import Link from "next/link";
