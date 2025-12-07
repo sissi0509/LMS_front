@@ -15,6 +15,7 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
 
   const [q, setQuiz] = useState<any>({})
   const [multipleAttempt, setMultipleAttempt] = useState(false)
+  const [maxAtt, setMaxAtt] = useState(1);
   const [timeLimitBool, setTimeLimitBool] = useState(false)
   const [shuffle, setShuffle] = useState(false)
   const [showCorrAnswer, setShowCorrectAnswer] = useState(false)
@@ -30,6 +31,7 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
     const quiz = await client.getQuizById(quizId)
     setQuiz(quiz)
     setMultipleAttempt(quiz.multipleAttempts)
+    setMaxAtt(quiz.maxAttempts)
     setTimeLimitBool(quiz.timeLimitMinutes > 0 ? true : false)
     setShuffle(quiz.shuffleAnswers)
     setShowCorrectAnswer(quiz.showCorrectAnswers)
@@ -42,13 +44,13 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
     setCorrectAnswerAt(quiz.showCorrectAnswersAt ? quiz.showCorrectAnswersAt.slice(0,10) : "")
   }
 
-  const updateQuizWithoutPublish = async (quizData: any) => {
-    const updatedQuiz = await client.updateQuiz(quizId, quizData)
+  const updateQuizWithoutPublish = async () => {
+    const updatedQuiz = await client.updateQuiz(quizId, q)
     setQuiz(updatedQuiz)
   }
 
-  const updateQuizWithPublish = async (quizData: any) => {
-    const publishedQuiz = {...quizData, published: true}
+  const updateQuizWithPublish = async () => {
+    const publishedQuiz = {...q, published: true}
     const updatedQuiz = await client.updateQuiz(quizId, publishedQuiz)
     setQuiz(updatedQuiz)
   }
@@ -108,13 +110,21 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
                     label="Time Limit"
                     className="text-nowrap me-5"
                     checked={timeLimitBool}
-                    onChange={(e) => setTimeLimitBool(e.target.checked)}
+                    onChange={(e) => {
+                      const tl = e.target.checked
+                      setTimeLimitBool(tl)
+                      setQuiz({...q, 
+                        timeLimitMinutes: tl ? q.timeLimitMinutes : 0})
+                    }}
                   />
                   <Form.Control
                     type="number me-5"
                     value={timeLimitBool ? q.timeLimitMinutes : 0}
                     className="me-2"
-                    onChange={(e) => setQuiz({...q, timeLimitMinutes: e.target.value})}
+                    onChange={(e) => {
+                      setQuiz({...q, timeLimitMinutes: e.target.value})
+                      
+                    }}
                   />
                   <span>Minutes</span>
                 </Form.Group>
@@ -132,15 +142,23 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
                     label="Allow Multiple Attempts"
                     checked={multipleAttempt}
                     onChange={(e) => {
-                      setMultipleAttempt(e.target.checked)
-                      setQuiz({...q, multipleAttempts: e.target.checked})}}
+                      const multipleA = e.target.checked
+                      setMultipleAttempt(multipleA)
+                      setQuiz({...q, 
+                        multipleAttempts: multipleA,
+                        maxAttempts: multipleA ? q.maxAttempts || 1 : 1})
+                    }}
                   />
                   {multipleAttempt ? 
                   
                     <Row className="me-3 d-flex pb-2 align-items-center">
                       <Col className="ms-4"><span className="text-nowrap">How Many Attemps</span></Col>
                       <Col>
-                      <Form.Control type="number" defaultValue={q.maxAttempts} onChange={(e) => setQuiz({...q, maxAttempts: e.target.value})}/>
+                      <Form.Control type="number" defaultValue={q.maxAttempts} 
+                        onChange={(e) =>
+                            setQuiz({...q, maxAttempts: e.target.value})
+                           }
+                           />
                       </Col>
                     </Row>
                     :
@@ -284,10 +302,10 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
       <hr />
       <div className="float-end me-4">
         <div className="mt-2 mb-3">
-            <Link href={`/Courses/${courseId}/Quizzes/${quizId}`} onClick={() => updateQuizWithoutPublish(q)} className="btn btn-danger btn-lg me-1 text-nowrap float-end">
+            <Link href={`/Courses/${courseId}/Quizzes/${quizId}`} onClick={() => updateQuizWithoutPublish()} className="btn btn-danger btn-lg me-1 text-nowrap float-end">
                 Save
             </Link>
-            <Link href={`/Courses/${courseId}/Quizzes`} onClick={() => updateQuizWithPublish(q)} className="btn btn-secondary btn-lg me-1 text-nowrap float-end">
+            <Link href={`/Courses/${courseId}/Quizzes`} onClick={() => updateQuizWithPublish()} className="btn btn-secondary btn-lg me-1 text-nowrap float-end">
                 Save and Publish
             </Link>
             <Link href={`/Courses/${courseId}/Quizzes`} className="btn btn-secondary btn-lg me-1 text-nowrap float-end">
