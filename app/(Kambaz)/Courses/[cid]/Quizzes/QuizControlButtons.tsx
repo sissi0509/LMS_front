@@ -6,9 +6,9 @@ import Link from "next/link";
 import QuizCopyDetail from "./QuizCopyDetail";
 
 export default function QuizControlButtons(
-  {cid, quiz, updateQuiz, user, deleteQuiz } : 
+  {cid, quiz, updateQuiz, user, deleteQuiz, fetchQuizzes } : 
   {cid: string; quiz: any; updateQuiz: (quizId: string, updatedData: any) => void; user: any
-    deleteQuiz: (cid: string, quizId: string) => void
+    deleteQuiz: (cid: string, quizId: string) => void; fetchQuizzes: (cid: string) => void
   }) {
 
   const [showCopyDetail, setCopyDetail] = useState(false);
@@ -18,7 +18,7 @@ export default function QuizControlButtons(
       <QuizCheckMark publishStatus={quiz.published}/>
 
       {showCopyDetail && user.role === "FACULTY" && (
-        <QuizCopyDetail quiz={quiz} setShow={setCopyDetail} showStatus={showCopyDetail}/>
+        <QuizCopyDetail quiz={quiz} cid={cid} setShow={setCopyDetail} showStatus={showCopyDetail} fetchQuizzes={fetchQuizzes}/>
       )}
       
       <Dropdown>

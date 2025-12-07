@@ -26,6 +26,7 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
   const [available, setAvailable] = useState("")
   const [until, setUntil] = useState("")
   const [correctAnswerAt, setCorrectAnswerAt] = useState("")
+  const [lockQuestion, setLockQuestion] = useState(false)
  
   const fetchQuiz = async () => {
     const quiz = await client.getQuizById(quizId)
@@ -42,6 +43,7 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
     setAvailable(quiz.availableFrom ? quiz.availableFrom.slice(0, 10) : "")
     setUntil(quiz.availableUntil ? quiz.availableUntil.slice(0, 10) : "")
     setCorrectAnswerAt(quiz.showCorrectAnswersAt ? quiz.showCorrectAnswersAt.slice(0,10) : "")
+    setLockQuestion(quiz.lockQuestionAfterAnswer)
   }
 
   const updateQuizWithoutPublish = async () => {
@@ -178,11 +180,13 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
                               label="Let students see the correct answer"
                               checked={showCorrAnswer}
                               onChange={(e) => {
-                                setShowCorrectAnswer(e.target.checked)
-                                setQuiz({...q, showCorrectAnswers: e.target.checked})
-                                if (e.target.checked === false) {
-                                  setQuiz({...q, showCorrectAnswersAt: null})
-                                }
+                                const ca = e.target.checked
+                                setShowCorrectAnswer(ca)
+                                setQuiz({...q, 
+                                  showCorrectAnswers: ca,
+                                  showCorrectAnswersAt: ca ? q.showCorrectAnswersAt : null
+                                })
+                                
                               }}/>
 
                   {showCorrAnswer ? 
@@ -226,7 +230,12 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
                               name="accesscode"
                               label="Require an access code"
                               checked={accessCodeRequirement}
-                              onChange={(e) => setAccessCodeRequirement(e.target.checked)}/>
+                              onChange={(e) => 
+                                {
+                                  const ac = e.target.checked;
+                                  setAccessCodeRequirement(ac);
+                                  setQuiz({...q, accessCode: ac ? q.accessCode || "123" : null})
+                                  }}/>
 
                   {accessCodeRequirement ? 
                     <Row className="me-3 d-flex pb-2 align-items-center">
@@ -248,6 +257,15 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
                               onChange={(e) => {
                                 setWbecam(e.target.checked)
                                 setQuiz({...q, webcamRequired: e.target.checked})}} />
+
+                  <Form.Check className="ms-2 mt-2 mb-2 text-nowrap"
+                              name="webcam"
+                              label="Lock Question After Answering"
+                              checked={lockQuestion}
+                              onChange={(e) => {
+                                const lq = e.target.checked
+                                setLockQuestion(lq)
+                                setQuiz({...q, lockQuestionAfterAnswer: lq})}} />
               </Form.Group>
             </Col>
           </Row>

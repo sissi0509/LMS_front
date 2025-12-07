@@ -34,8 +34,6 @@ export default function QuizDetailsScreen() {
         getQuizTotal();
     }, [])
 
-    console.log(quizTotal)
-
     return (
         <div>
             {currentUser?.role === "FACULTY" ? 

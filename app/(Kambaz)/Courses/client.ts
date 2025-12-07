@@ -178,3 +178,8 @@ export const createOrUpdateAttempt = async (userId: string, quizId: string, atte
   const response = await axios.post(`${USERS_API}/${userId}/quizzes/${quizId}/attempts`, attemptData)
   return response.data;
 }
+
+export const findPublishedQuizzesForCourse = async (courseId: string) => {
+  const response = await axios.get(`${COURSES_API}/${courseId}/quizzes/published`);
+  return response.data;
+}
