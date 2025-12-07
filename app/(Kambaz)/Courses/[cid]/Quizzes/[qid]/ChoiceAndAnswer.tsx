@@ -2,7 +2,13 @@ import React from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { ImArrowRight } from "react-icons/im";
 
-export default function DetailAnswers({ question }: { question: any }) {
+export default function ChoiceAndAnswer({
+  question,
+  studentAnswer,
+}: {
+  question: any;
+  studentAnswer: any;
+}) {
   const choices = question.choices || [];
   const trueFalseAnswers = [true, false];
   const answers = question.acceptableAnswers || [];
@@ -24,7 +30,9 @@ export default function DetailAnswers({ question }: { question: any }) {
                 name={`${question.title}-${question.type}`}
                 label={choice}
                 className="mb-2"
-                // checked={choice.toLowerCase() === question.correctChoiceText}
+                checked={
+                  choice.toLowerCase() === studentAnswer?.selectedChoiceText
+                }
                 disabled
               />
             </Col>
@@ -47,7 +55,7 @@ export default function DetailAnswers({ question }: { question: any }) {
                 name={`${question.title}-${question.type}`}
                 label={choice ? "True" : "False"}
                 className="mb-2"
-                // checked={choice === question.correctBoolean}
+                checked={choice === studentAnswer?.selectedBoolean}
                 disabled
               />
             </Col>

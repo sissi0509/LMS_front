@@ -56,3 +56,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   appearance: none;
   pointer-events: none;
 } */
+
+.arrow-box {
+  min-width: 0.5rem; /* stable width, good for icons */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
