@@ -7,6 +7,7 @@ export default function StudentQuizTake({cid, qid, userId}: {cid: string, qid: s
 
   const [quizAttempt, setAttempt] = useState<any>({})  
   const [quiz, setQuiz] = useState<any>({})
+  const [quizPoint, setQuizPoint] = useState<any>(0)
 
   const createUpdateAttempt = async () => {
     const today = new Date().toISOString()
@@ -19,6 +20,11 @@ export default function StudentQuizTake({cid, qid, userId}: {cid: string, qid: s
       const attempt = await client.createOrUpdateAttempt(userId, qid, {startAt: [today], submittedAt: [], score: [], answers: []})
       setAttempt(attempt);
     }
+  }
+
+  const getQuizPoint = async () => {
+    const p = await client.findQuizPoints(qid)
+    setQuizPoint(p)
   }
 
   const fetchQuiz = async () => {
@@ -34,13 +40,20 @@ export default function StudentQuizTake({cid, qid, userId}: {cid: string, qid: s
     setAttempt(userAttempt)
   }
 
+  const get_t = (a: Date) => {
+        const date = a.toLocaleDateString('en-US', {timeZone: "UTC", month: 'short', day: '2-digit'});
+        const t = a.toLocaleTimeString('en-US', {timeZone: "UTC", hour: '2-digit', minute: '2-digit', hour12: true}).substring(0, 5);
+        const z = a.toLocaleTimeString('en-US', {timeZone: "UTC", hour: '2-digit', minute: '2-digit', hour12: true}).substring(6, 8).toLowerCase();
+        return `${date} at ${t}${z}`;
+    }
+
   useEffect(() => {
     fetchAttempt();
     fetchQuiz();
+    getQuizPoint();
   }, [])
 
-  console.log("attempt", quizAttempt)
-  console.log("max", quiz.maxAttempts)
+  console.log("quiz", quiz)
 
   if (!quiz || quiz.length === 0) {
     return <div>Loading questions...</div>;
@@ -49,16 +62,22 @@ export default function StudentQuizTake({cid, qid, userId}: {cid: string, qid: s
   
   return (
     <div>
-        <h1>Title</h1>
+        <h1>{quiz.title}</h1>
         <hr />
             <div className='d-flex flex-wrap'>
-                <div className="me-5 text-nowrap mb-1"><b>Due </b>Dec 8 at 11:59</div>
-                <div className="me-5 text-nowrap mb-1"><b>Points </b>20</div>
-                <div className="me-5 text-nowrap mb-1"><b>Questions </b>2</div>
-                <div className="me-5 text-nowrap mb-1"><b>Available </b>Dec 1 at 12am - Dec 8 at 11:59pm</div>
-                <div className="me-5 text-nowrap mb-1"><b>Time Limit</b> 20 Minutes</div>
+                <div className="me-5 text-nowrap mb-1"><b>Due </b>{get_t(new Date(quiz.dueDate))}</div>
+                <div className="me-5 text-nowrap mb-1"><b>Points </b>{quizPoint}</div>
+                <div className="me-5 text-nowrap mb-1"><b>Questions </b>{quiz.questions?.length}</div>
+                <div className="me-5 text-nowrap mb-1"><b>Available </b>{get_t(new Date(quiz.availableFrom))} - {get_t(new Date(quiz.availableUntil))}</div>
+
+                {quiz.timeLimitMinutes > 0 ? 
+                <div className="me-5 text-nowrap mb-1"><b>Time Limit</b> {quiz.timeLimitMinutes} Minutes</div>
+                  :
+                  ""
+                }
             </div>
         <hr />
+        <h3>Instructions</h3>
         <div>{quiz.description}</div>
         <br />
         {   

@@ -78,7 +78,7 @@ export default function QuizDetail({courseId, quizId}: {courseId: string; quizId
         </Row>
         <Row>
             <Col xs="3" className="text-end"><b>Access Code</b></Col>
-            <Col>{quiz.accessCode !== null ? "Yes" : "No"}</Col>
+            <Col>{quiz.accessCode !== null ? quiz.accessCode : "No"}</Col>
         </Row>
         <Row>
             <Col xs="3" className="text-end"><b>One Question at a Time</b></Col>

@@ -19,6 +19,7 @@ import QuizDetail from "./QuizDetail";
 import { useEffect, useState } from "react";
 import * as client from "../../../client";
 import PreviewQuestions from "./PreviewQuestions";
+import StudentQuizAttemptHistory from "./StudentQuizAttemptHistory";
 
 export default function QuizDetailsScreen() {
   const { cid, qid } = useParams();
@@ -59,6 +60,7 @@ export default function QuizDetailsScreen() {
             qid={qid as string}
             userId={currentUser?._id ? currentUser._id : ""}
           />
+          <StudentQuizAttemptHistory quizId={qid as string} />
         </div>
       )}
       <PreviewQuestions userId={currentUser?._id ? currentUser._id : ""} />
