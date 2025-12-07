@@ -37,7 +37,7 @@ export default function FillBlankAnswerOne({
     });
   };
 
-  const deleteChoice = (answerIndex) => {
+  const deleteChoice = (answerIndex: any) => {
     allowedAnswers.splice(answerIndex, 1);
     setAllowedAnswers(allowedAnswers);
     onChange({ ...question, acceptableAnswers: allowedAnswers });
