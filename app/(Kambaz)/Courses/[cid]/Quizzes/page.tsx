@@ -70,7 +70,7 @@ export default function Quizzes() {
     }
 
     const updateQuiz = async (quizId: string, updatedQuiz: any) => {
-        client.updateQuiz(quizId, updatedQuiz);
+        await client.updateQuiz(quizId, updatedQuiz);
         const newQuizzes = quizzes.map((q: any) => q._id === quizId ? updatedQuiz : q);
         dispatch(setQuizzes(newQuizzes))
     }
@@ -109,7 +109,7 @@ export default function Quizzes() {
                                     <PiRocketLaunch className="me-3 ms-3 fs-3 text-success flex-shrink-0"/>
                                     <div>
                                         <Link href={`/Courses/${cid}/Quizzes/${quiz._id}`} className="text-black text-decoration-none"><b>{quiz.title}</b></Link><br/>
-                                        <span className="fs-6">{setAvailability(new Date(quiz.availableFrom), new Date(quiz.availableUntil))}</span> | <b className="fs-6">Due</b> <span className="fs-6">{get_t(new Date(quiz.availableUntil))}</span> | <span className="fs-6">{quiz.points} pts | {quiz.questions.length} Questions</span>
+                                        <span className="fs-6">{setAvailability(new Date(quiz.availableFrom), new Date(quiz.availableUntil))}</span> | <b className="fs-6">Due</b> <span className="fs-6">{get_t(new Date(quiz.availableUntil))}</span> | <span className="fs-6">{quiz.points} pts | {quiz.questions?.length} Questions</span>
                                     </div>
                                 </div>
                                 {currentUser?.role === "FACULTY" ? <QuizControlButtons cid={cid as string} quiz={quiz} updateQuiz={updateQuiz} user={currentUser} deleteQuiz={deleteQuizFromCourse} fetchQuizzes={fetchQuizzes}/> : null}

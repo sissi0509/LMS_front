@@ -125,7 +125,7 @@ export default function TakePage() {
   return (
     <div>
       <QuizDescription
-        quizId={qid}
+        quiz={quiz}
         userId={currentUser ? currentUser._id : ""}
       />
       <Questions
