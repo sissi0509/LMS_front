@@ -99,6 +99,7 @@ export default function TakePage() {
       );
       setAttempt(attempt);
     }
+    fetchAttempt()
   };
 
   const handleSubmitAttempt = async (answers: any[]) => {
