@@ -6,9 +6,11 @@ import Link from "next/link";
 
 export default function QuizDetail({
   courseId,
+  quizId,
   quiz
 }: {
   courseId: string;
+  quizId: string;
   quiz: any
 }) {
 
@@ -44,7 +46,7 @@ export default function QuizDetail({
   };
 
   const getQuizPoint = async () => {
-    const p = await client.findQuizPoints(quiz._id)
+    const p = await client.findQuizPoints(quizId)
     setQuizPoint(p)
   }
 
