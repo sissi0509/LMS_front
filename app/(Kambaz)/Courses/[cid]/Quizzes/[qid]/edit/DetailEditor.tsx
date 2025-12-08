@@ -9,73 +9,190 @@ import { RxCross2 } from "react-icons/rx";
 // import CancelSaveButton from "../../CancelSaveButton";
 import * as client from "../../../../client";
 import Link from "next/link";
+import { HiDotsVertical } from "react-icons/hi";
+import { IoIosArrowDown } from "react-icons/io";
+import { MdBorderColor } from "react-icons/md";
+import { BiFontColor } from "react-icons/bi";
 
-export default function DetailEditor({courseId, quizId, point}: 
-  {courseId: string; quizId: string; point: number}) {
-
-  const [q, setQuiz] = useState<any>({})
-  const [multipleAttempt, setMultipleAttempt] = useState(false)
+export default function DetailEditor({
+  courseId,
+  quizId,
+  point,
+}: {
+  courseId: string;
+  quizId: string;
+  point: number;
+}) {
+  const [q, setQuiz] = useState<any>({});
+  const [multipleAttempt, setMultipleAttempt] = useState(false);
   const [maxAtt, setMaxAtt] = useState(1);
-  const [timeLimitBool, setTimeLimitBool] = useState(false)
-  const [shuffle, setShuffle] = useState(false)
-  const [showCorrAnswer, setShowCorrectAnswer] = useState(false)
-  const [accessCodeRequirement, setAccessCodeRequirement] = useState(false)
-  const [oneQuestion, setOneQuestion] = useState(false)
-  const [webcam, setWbecam] = useState(false)
-  const [due, setDue] = useState("")
-  const [available, setAvailable] = useState("")
-  const [until, setUntil] = useState("")
-  const [correctAnswerAt, setCorrectAnswerAt] = useState("")
-  const [lockQuestion, setLockQuestion] = useState(false)
- 
+  const [timeLimitBool, setTimeLimitBool] = useState(false);
+  const [shuffle, setShuffle] = useState(false);
+  const [showCorrAnswer, setShowCorrectAnswer] = useState(false);
+  const [accessCodeRequirement, setAccessCodeRequirement] = useState(false);
+  const [oneQuestion, setOneQuestion] = useState(false);
+  const [webcam, setWbecam] = useState(false);
+  const [due, setDue] = useState("");
+  const [available, setAvailable] = useState("");
+  const [until, setUntil] = useState("");
+  const [correctAnswerAt, setCorrectAnswerAt] = useState("");
+  const [lockQuestion, setLockQuestion] = useState(false);
+
   const fetchQuiz = async () => {
-    const quiz = await client.getQuizById(quizId)
-    setQuiz(quiz)
-    setMultipleAttempt(quiz.multipleAttempts)
-    setMaxAtt(quiz.maxAttempts)
-    setTimeLimitBool(quiz.timeLimitMinutes > 0 ? true : false)
-    setShuffle(quiz.shuffleAnswers)
-    setShowCorrectAnswer(quiz.showCorrectAnswers)
-    setAccessCodeRequirement(quiz.accessCode !== null ? true : false)
-    setOneQuestion(quiz.oneQuestionPerTime)
-    setWbecam(quiz.webcamRequired)
-    setDue(quiz.dueDate ? quiz.dueDate.slice(0, 10) : "")
-    setAvailable(quiz.availableFrom ? quiz.availableFrom.slice(0, 10) : "")
-    setUntil(quiz.availableUntil ? quiz.availableUntil.slice(0, 10) : "")
-    setCorrectAnswerAt(quiz.showCorrectAnswersAt ? quiz.showCorrectAnswersAt.slice(0,10) : "")
-    setLockQuestion(quiz.lockQuestionAfterAnswer)
-  }
+    const quiz = await client.getQuizById(quizId);
+    setQuiz(quiz);
+    setMultipleAttempt(quiz.multipleAttempts);
+    setMaxAtt(quiz.maxAttempts);
+    setTimeLimitBool(quiz.timeLimitMinutes > 0 ? true : false);
+    setShuffle(quiz.shuffleAnswers);
+    setShowCorrectAnswer(quiz.showCorrectAnswers);
+    setAccessCodeRequirement(quiz.accessCode !== null ? true : false);
+    setOneQuestion(quiz.oneQuestionPerTime);
+    setWbecam(quiz.webcamRequired);
+    setDue(quiz.dueDate ? quiz.dueDate.slice(0, 10) : "");
+    setAvailable(quiz.availableFrom ? quiz.availableFrom.slice(0, 10) : "");
+    setUntil(quiz.availableUntil ? quiz.availableUntil.slice(0, 10) : "");
+    setCorrectAnswerAt(
+      quiz.showCorrectAnswersAt ? quiz.showCorrectAnswersAt.slice(0, 10) : ""
+    );
+    setLockQuestion(quiz.lockQuestionAfterAnswer);
+  };
 
   const updateQuizWithoutPublish = async () => {
     if (!q._id) {
       console.error("no quid exist");
       return;
     }
-    const updatedQuiz = await client.updateQuiz(quizId, q)
-    setQuiz(updatedQuiz)
-  }
+    const updatedQuiz = await client.updateQuiz(quizId, q);
+    setQuiz(updatedQuiz);
+  };
 
   const updateQuizWithPublish = async () => {
-    const publishedQuiz = {...q, published: true}
-    const updatedQuiz = await client.updateQuiz(quizId, publishedQuiz)
-    setQuiz(updatedQuiz)
-  }
+    const publishedQuiz = { ...q, published: true };
+    const updatedQuiz = await client.updateQuiz(quizId, publishedQuiz);
+    setQuiz(updatedQuiz);
+  };
 
   useEffect(() => {
-      fetchQuiz();
-  }, [])
+    fetchQuiz();
+  }, []);
 
   if (!quizId) {
-    return <div>loading...</div>
+    return <div>loading...</div>;
   }
 
   return (
     <div>
       <Form>
-        <Form.Control defaultValue={q.title} className="mb-3" onChange={(e) => setQuiz({...q, title: e.target.value})}/>
+        <Form.Control
+          defaultValue={q.title}
+          className="mb-3"
+          onChange={(e) => setQuiz({ ...q, title: e.target.value })}
+        />
 
         <div>Quiz Instructions: </div>
-        <Form.Control as="textarea" rows={8} defaultValue={q.description} className="mb-3" onChange={(e) => setQuiz({...q, description: e.target.value})} />
+        <div className="btn-group ms-2 mb-2" role="group">
+          <button type="button" className="btn btn-light">
+            Edit
+          </button>
+          <button type="button" className="btn btn-light">
+            View
+          </button>
+          <button type="button" className="btn btn-light">
+            Insert
+          </button>
+          <button type="button" className="btn btn-light">
+            Format
+          </button>
+          <button type="button" className="btn btn-light">
+            Tools
+          </button>
+          <button type="button" className="btn btn-light">
+            Table
+          </button>
+        </div>
+
+        <div className="d-flex align-items-center ms-2 gap-2 mb-2">
+          <select
+            id="wb-font-select"
+            className="form-select no-border"
+            style={{ width: 80 }}
+            defaultValue={"8"}
+            name="font-size"
+          >
+            <option value="8">8pt</option>
+            <option value="12">12pt</option>
+            <option value="14">14pt</option>
+            <option value="16">16pt</option>
+            <option value="18">18pt</option>
+          </select>
+
+          <select
+            id="wb-style-select"
+            className="form-select no-border"
+            defaultValue={"paragraph"}
+            style={{ width: 140 }}
+            name="style"
+          >
+            <option value="heading1">heading1</option>
+            <option value="paragraph">paragraph</option>
+          </select>
+          {/* <div className="vr mx-2"></div> */}
+          <div className="btn-group ms-2 gap-1" role="group">
+            <button className="btn btn-light">
+              <b>B</b>
+            </button>
+            <button className="btn btn-light fst-italic">I</button>
+            <button className="btn btn-light text-decoration-underline">
+              U
+            </button>
+            <label htmlFor="colorNative" className="btn btn-light">
+              <BiFontColor size={22} />
+              <IoIosArrowDown />
+            </label>
+            <input
+              type="color"
+              id="colorNative"
+              style={{ opacity: 0, width: 1, height: 1 }}
+            />
+            <label htmlFor="colorNative" className="btn btn-light">
+              <MdBorderColor />
+              <IoIosArrowDown />
+            </label>
+            <input
+              type="color"
+              id="colorNative"
+              style={{ opacity: 0, width: 1, height: 1 }}
+            />
+
+            <select
+              className="form-select no-border"
+              style={{ width: 70 }}
+              defaultValue={"super"}
+              name="script"
+            >
+              <option value="super">
+                {"T\u00B2\u00A0\u00A0\u00A0\u00A0Superscript"}
+              </option>
+              <option value="sub">
+                {"T\u2082\u00A0\u00A0\u00A0\u00A0Subscript"}
+              </option>
+            </select>
+          </div>
+
+          <div className="vr mx-2">
+            <button className="btn btn-light">
+              <HiDotsVertical />
+            </button>
+          </div>
+        </div>
+        <Form.Control
+          as="textarea"
+          rows={8}
+          defaultValue={q.description}
+          className="mb-3"
+          onChange={(e) => setQuiz({ ...q, description: e.target.value })}
+        />
 
         <div className="me-4 ">
           <Row className="mb-3">
@@ -83,7 +200,10 @@ export default function DetailEditor({courseId, quizId, point}:
               Quiz type
             </Form.Label>
             <Col sm="4">
-              <Form.Select value={q.type} onChange={(e) => setQuiz({...q, type: e.target.value})}>
+              <Form.Select
+                value={q.type}
+                onChange={(e) => setQuiz({ ...q, type: e.target.value })}
+              >
                 <option value="GRADED_QUIZ">Graded Quiz</option>
                 <option value="PRACTICE_QUIZ">Practice Quiz</option>
                 <option value="GRADED_SURVEY">Graded Survey</option>
@@ -99,7 +219,6 @@ export default function DetailEditor({courseId, quizId, point}:
             <Col sm="4">
               <Form.Control readOnly type="number" value={point} />
             </Col>
-
           </Row>
 
           <Row>
@@ -107,7 +226,12 @@ export default function DetailEditor({courseId, quizId, point}:
               Assignment Group
             </Form.Label>
             <Col sm="4">
-              <Form.Select value={q.assignmentGroup} onChange={(e) => setQuiz({...q, assignmentGroup: e.target.value})}>
+              <Form.Select
+                value={q.assignmentGroup}
+                onChange={(e) =>
+                  setQuiz({ ...q, assignmentGroup: e.target.value })
+                }
+              >
                 <option value="QUIZZES">QUIZZES</option>
                 <option value="EXAMS">EXAMS</option>
                 <option value="ASSIGNMENTS">ASSIGNMENTS</option>
@@ -116,11 +240,15 @@ export default function DetailEditor({courseId, quizId, point}:
 
               <fieldset className="mt-3">
                 <Form.Label>Options</Form.Label>
-                <Form.Check name="quizdetailoption" label="Shuffle Answers" 
-                    checked={shuffle}
-                    onChange={(e) => {
-                      setShuffle(e.target.checked)
-                      setQuiz({...q, shuffleAnswers: e.target.checked})}}/>
+                <Form.Check
+                  name="quizdetailoption"
+                  label="Shuffle Answers"
+                  checked={shuffle}
+                  onChange={(e) => {
+                    setShuffle(e.target.checked);
+                    setQuiz({ ...q, shuffleAnswers: e.target.checked });
+                  }}
+                />
 
                 <Form.Group className="d-flex align-items-center">
                   <Form.Check
@@ -129,10 +257,12 @@ export default function DetailEditor({courseId, quizId, point}:
                     className="text-nowrap me-5"
                     checked={timeLimitBool}
                     onChange={(e) => {
-                      const tl = e.target.checked
-                      setTimeLimitBool(tl)
-                      setQuiz({...q, 
-                        timeLimitMinutes: tl ? q.timeLimitMinutes : 0})
+                      const tl = e.target.checked;
+                      setTimeLimitBool(tl);
+                      setQuiz({
+                        ...q,
+                        timeLimitMinutes: tl ? q.timeLimitMinutes : 0,
+                      });
                     }}
                   />
                   <Form.Control
@@ -140,8 +270,7 @@ export default function DetailEditor({courseId, quizId, point}:
                     value={timeLimitBool ? q.timeLimitMinutes : 0}
                     className="me-2"
                     onChange={(e) => {
-                      setQuiz({...q, timeLimitMinutes: e.target.value})
-                      
+                      setQuiz({ ...q, timeLimitMinutes: e.target.value });
                     }}
                   />
                   <span>Minutes</span>
@@ -154,138 +283,166 @@ export default function DetailEditor({courseId, quizId, point}:
             <Form.Label sm="4" column className="text-end"></Form.Label>
             <Col>
               <Form.Group className="border mt-2">
-                  <Form.Check
-                    className="ms-2 mt-2 mb-2 text-nowrap"
-                    name="quizdetailoption"
-                    label="Allow Multiple Attempts"
-                    checked={multipleAttempt}
-                    onChange={(e) => {
-                      const multipleA = e.target.checked
-                      setMultipleAttempt(multipleA)
-                      setQuiz({...q, 
-                        multipleAttempts: multipleA,
-                        maxAttempts: multipleA ? q.maxAttempts || 1 : 1})
-                    }}
-                  />
-                  {multipleAttempt ? 
-                  
-                    <Row className="me-3 d-flex pb-2 align-items-center">
-                      <Col className="ms-4"><span className="text-nowrap">How Many Attemps</span></Col>
-                      <Col>
-                      <Form.Control type="number" defaultValue={q.maxAttempts} 
+                <Form.Check
+                  className="ms-2 mt-2 mb-2 text-nowrap"
+                  name="quizdetailoption"
+                  label="Allow Multiple Attempts"
+                  checked={multipleAttempt}
+                  onChange={(e) => {
+                    const multipleA = e.target.checked;
+                    setMultipleAttempt(multipleA);
+                    setQuiz({
+                      ...q,
+                      multipleAttempts: multipleA,
+                      maxAttempts: multipleA ? q.maxAttempts || 1 : 1,
+                    });
+                  }}
+                />
+                {multipleAttempt ? (
+                  <Row className="me-3 d-flex pb-2 align-items-center">
+                    <Col className="ms-4">
+                      <span className="text-nowrap">How Many Attemps</span>
+                    </Col>
+                    <Col>
+                      <Form.Control
+                        type="number"
+                        defaultValue={q.maxAttempts}
                         onChange={(e) =>
-                            setQuiz({...q, maxAttempts: e.target.value})
-                           }
-                           />
-                      </Col>
-                    </Row>
-                    :
-                    ""
-                  }
-                </Form.Group>
-            
-            </Col>
-          </Row>
-
-          <Row>
-            <Form.Label sm="4" column className="text-end"></Form.Label>
-            <Col>
-              <Form.Group className="border mt-2">
-                  <Form.Check className="ms-2 mt-2 mb-2 text-nowrap"
-                              name="showcorrectanswer"
-                              label="Let students see the correct answer"
-                              checked={showCorrAnswer}
-                              onChange={(e) => {
-                                const ca = e.target.checked
-                                setShowCorrectAnswer(ca)
-                                setQuiz({...q, 
-                                  showCorrectAnswers: ca,
-                                  showCorrectAnswersAt: ca ? q.showCorrectAnswersAt : null
-                                })
-                                
-                              }}/>
-
-                  {showCorrAnswer ? 
-                    <Row className="me-3 d-flex pb-2 align-items-center">
-                      <Col className="ms-4">Show Correct Answers at</Col>
-                      <Col>
-                        <Form.Control type="date" defaultValue={correctAnswerAt}
-                          onChange={(e) => setQuiz({...q, showCorrectAnswersAt: new Date(e.target.value)})}/>
-                      </Col>
-                    </Row>
-                    :
-                    ""
-                  }
-                    
-                </Form.Group>
-            </Col>
-          </Row>
-          
-          <Row>
-            <Form.Label sm="4" column className="text-end"></Form.Label>
-            <Col>
-              <Form.Group className="border mt-2">
-                  <Form.Check className="ms-2 mt-2 mb-2 text-nowrap"
-                              name="showonequestion"
-                              label="Show one question at a time"
-                              checked={oneQuestion}
-                              onChange={(e) => {
-                                setOneQuestion(e.target.checked)
-                                setQuiz({...q, oneQuestionPerTime: e.target.checked})
-                                }}/>
-                    
-                </Form.Group>
-            </Col>
-          </Row>
-
-          <Row> 
-            <Form.Label sm="4" column className="text-end">Quiz Restrictions</Form.Label>
-            <Col>
-              <Form.Group className="border mt-2">
-                  <Form.Check className="ms-2 mt-2 mb-2 text-nowrap"
-                              name="accesscode"
-                              label="Require an access code"
-                              checked={accessCodeRequirement}
-                              onChange={(e) => 
-                                {
-                                  const ac = e.target.checked;
-                                  setAccessCodeRequirement(ac);
-                                  setQuiz({...q, accessCode: ac ? q.accessCode || "" : null})
-                                  }}/>
-
-                  {accessCodeRequirement ? 
-                    <Row className="me-3 d-flex pb-2 align-items-center">
-                      <Col className="ms-4">
-                        Access Code
-                      </Col>
-                      <Col>
-                        <Form.Control defaultValue={q.accessCode ? q.accessCode : ""} onChange={(e) => setQuiz({...q, accessCode: e.target.value})}/>
-                      </Col>
-                    </Row>  
-
-                    : ""
-                  }
-
-                  <Form.Check className="ms-2 mt-2 mb-2 text-nowrap"
-                              name="webcam"
-                              label="Require a webcam"
-                              checked={webcam}
-                              onChange={(e) => {
-                                setWbecam(e.target.checked)
-                                setQuiz({...q, webcamRequired: e.target.checked})}} />
-
-                  <Form.Check className="ms-2 mt-2 mb-2 text-nowrap"
-                              name="webcam"
-                              label="Lock Question After Answering"
-                              checked={lockQuestion}
-                              onChange={(e) => {
-                                const lq = e.target.checked
-                                setLockQuestion(lq)
-                                setQuiz({...q, lockQuestionAfterAnswer: lq})}} />
+                          setQuiz({ ...q, maxAttempts: e.target.value })
+                        }
+                      />
+                    </Col>
+                  </Row>
+                ) : (
+                  ""
+                )}
               </Form.Group>
             </Col>
           </Row>
 
+          <Row>
+            <Form.Label sm="4" column className="text-end"></Form.Label>
+            <Col>
+              <Form.Group className="border mt-2">
+                <Form.Check
+                  className="ms-2 mt-2 mb-2 text-nowrap"
+                  name="showcorrectanswer"
+                  label="Let students see the correct answer"
+                  checked={showCorrAnswer}
+                  onChange={(e) => {
+                    const ca = e.target.checked;
+                    setShowCorrectAnswer(ca);
+                    setQuiz({
+                      ...q,
+                      showCorrectAnswers: ca,
+                      showCorrectAnswersAt: ca ? q.showCorrectAnswersAt : null,
+                    });
+                  }}
+                />
+
+                {showCorrAnswer ? (
+                  <Row className="me-3 d-flex pb-2 align-items-center">
+                    <Col className="ms-4">Show Correct Answers at</Col>
+                    <Col>
+                      <Form.Control
+                        type="date"
+                        defaultValue={correctAnswerAt}
+                        onChange={(e) =>
+                          setQuiz({
+                            ...q,
+                            showCorrectAnswersAt: new Date(e.target.value),
+                          })
+                        }
+                      />
+                    </Col>
+                  </Row>
+                ) : (
+                  ""
+                )}
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row>
+            <Form.Label sm="4" column className="text-end"></Form.Label>
+            <Col>
+              <Form.Group className="border mt-2">
+                <Form.Check
+                  className="ms-2 mt-2 mb-2 text-nowrap"
+                  name="showonequestion"
+                  label="Show one question at a time"
+                  checked={oneQuestion}
+                  onChange={(e) => {
+                    setOneQuestion(e.target.checked);
+                    setQuiz({ ...q, oneQuestionPerTime: e.target.checked });
+                  }}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row>
+            <Form.Label sm="4" column className="text-end">
+              Quiz Restrictions
+            </Form.Label>
+            <Col>
+              <Form.Group className="border mt-2">
+                <Form.Check
+                  className="ms-2 mt-2 mb-2 text-nowrap"
+                  name="accesscode"
+                  label="Require an access code"
+                  checked={accessCodeRequirement}
+                  onChange={(e) => {
+                    const ac = e.target.checked;
+                    setAccessCodeRequirement(ac);
+                    setQuiz({
+                      ...q,
+                      accessCode: ac ? q.accessCode || "" : null,
+                    });
+                  }}
+                />
+
+                {accessCodeRequirement ? (
+                  <Row className="me-3 d-flex pb-2 align-items-center">
+                    <Col className="ms-4">Access Code</Col>
+                    <Col>
+                      <Form.Control
+                        defaultValue={q.accessCode ? q.accessCode : ""}
+                        onChange={(e) =>
+                          setQuiz({ ...q, accessCode: e.target.value })
+                        }
+                      />
+                    </Col>
+                  </Row>
+                ) : (
+                  ""
+                )}
+
+                <Form.Check
+                  className="ms-2 mt-2 mb-2 text-nowrap"
+                  name="webcam"
+                  label="Require a webcam"
+                  checked={webcam}
+                  onChange={(e) => {
+                    setWbecam(e.target.checked);
+                    setQuiz({ ...q, webcamRequired: e.target.checked });
+                  }}
+                />
+
+                <Form.Check
+                  className="ms-2 mt-2 mb-2 text-nowrap"
+                  name="webcam"
+                  label="Lock Question After Answering"
+                  checked={lockQuestion}
+                  onChange={(e) => {
+                    const lq = e.target.checked;
+                    setLockQuestion(lq);
+                    setQuiz({ ...q, lockQuestionAfterAnswer: lq });
+                  }}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
           <Row className="mt-2">
             <Form.Label sm="4" column className="text-end">
@@ -311,7 +468,13 @@ export default function DetailEditor({courseId, quizId, point}:
                   <Form.Label>
                     <b>Due</b>
                   </Form.Label>
-                  <Form.Control type="date" defaultValue={due} onChange={(e) => setQuiz({...q, dueDate: new Date(e.target.value)})}/>
+                  <Form.Control
+                    type="date"
+                    defaultValue={due}
+                    onChange={(e) =>
+                      setQuiz({ ...q, dueDate: new Date(e.target.value) })
+                    }
+                  />
                 </Form.Group>
 
                 <Row>
@@ -319,13 +482,31 @@ export default function DetailEditor({courseId, quizId, point}:
                     <Form.Label>
                       <b>Available from</b>
                     </Form.Label>
-                    <Form.Control type="date" defaultValue={available} onChange={(e) => setQuiz({...q, availableFrom: new Date(e.target.value)})}/>
+                    <Form.Control
+                      type="date"
+                      defaultValue={available}
+                      onChange={(e) =>
+                        setQuiz({
+                          ...q,
+                          availableFrom: new Date(e.target.value),
+                        })
+                      }
+                    />
                   </Col>
                   <Col className="ps-1" id="wd-available-until">
                     <Form.Label>
                       <b>Until</b>
                     </Form.Label>
-                    <Form.Control type="date" defaultValue={until} onChange={(e) => setQuiz({...q, availableUntil: new Date(e.target.value)})}/>
+                    <Form.Control
+                      type="date"
+                      defaultValue={until}
+                      onChange={(e) =>
+                        setQuiz({
+                          ...q,
+                          availableUntil: new Date(e.target.value),
+                        })
+                      }
+                    />
                   </Col>
                 </Row>
               </fieldset>
@@ -336,18 +517,28 @@ export default function DetailEditor({courseId, quizId, point}:
       <hr />
       <div className="float-end me-4">
         <div className="mt-2 mb-3">
-            <Link href={`/Courses/${courseId}/Quizzes/${quizId}`} onClick={() => updateQuizWithoutPublish()} className="btn btn-danger btn-lg me-1 text-nowrap float-end">
-                Save
-            </Link>
-            <Link href={`/Courses/${courseId}/Quizzes`} onClick={() => updateQuizWithPublish()} className="btn btn-secondary btn-lg me-1 text-nowrap float-end">
-                Save and Publish
-            </Link>
-            <Link href={`/Courses/${courseId}/Quizzes`} className="btn btn-secondary btn-lg me-1 text-nowrap float-end">
-                Cancel
-            </Link>
+          <Link
+            href={`/Courses/${courseId}/Quizzes/${quizId}`}
+            onClick={() => updateQuizWithoutPublish()}
+            className="btn btn-danger btn-lg me-1 text-nowrap float-end"
+          >
+            Save
+          </Link>
+          <Link
+            href={`/Courses/${courseId}/Quizzes`}
+            onClick={() => updateQuizWithPublish()}
+            className="btn btn-secondary btn-lg me-1 text-nowrap float-end"
+          >
+            Save and Publish
+          </Link>
+          <Link
+            href={`/Courses/${courseId}/Quizzes`}
+            className="btn btn-secondary btn-lg me-1 text-nowrap float-end"
+          >
+            Cancel
+          </Link>
         </div>
       </div>
-      
     </div>
   );
 }
