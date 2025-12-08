@@ -7,19 +7,21 @@ import * as clientE from "../../../../client";
 import { useParams } from "next/navigation";
 import DetailEditor from "./DetailEditor";
 import { Button, Tab, Tabs } from "react-bootstrap";
+import { FaPlus } from "react-icons/fa6";
+import { CiSearch } from "react-icons/ci";
 
 export default function QuizDetailEditor() {
   const { cid } = useParams<{ cid: string }>();
   const { qid } = useParams<{ qid: string }>();
   const [questions, setQuestions] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState(false);
-  const [point, setQuizPoint] = useState(0)
-  const [active, setActive] = useState("details")
+  const [point, setQuizPoint] = useState(0);
+  const [active, setActive] = useState("details");
 
   const getQuizPoint = async () => {
-      const p = await clientE.findQuizPoints(qid)
-      setQuizPoint(p)
-    }
+    const p = await clientE.findQuizPoints(qid);
+    setQuizPoint(p);
+  };
 
   const emptyQuestion = {
     _id: "new",
@@ -47,8 +49,10 @@ export default function QuizDetailEditor() {
   };
 
   const handleDeleteQuestion = async (questionId: string) => {
-    await client.deleteQuestionFromQuiz(qid, questionId);
     setQuestions((prev) => prev.filter((q) => q._id !== questionId));
+    if (questionId !== "new") {
+      await client.deleteQuestionFromQuiz(qid, questionId);
+    }
   };
   const resetQuestionsFromDb = async () => {
     await fetchAllQuestionsForQuiz();
@@ -68,7 +72,6 @@ export default function QuizDetailEditor() {
     setQuestions(questionsFromDB);
   };
 
-
   useEffect(() => {
     fetchAllQuestionsForQuiz();
     // setCurrentIndex(0);
@@ -76,14 +79,25 @@ export default function QuizDetailEditor() {
   }, [qid, active]);
   return (
     <div>
-
       <div>
         <span>Points {point}</span>
       </div>
-      <Tabs activeKey={active} onSelect={(e) => { if (e) {setActive(e)}}}>
-        <Tab eventKey="details" title="Details" >
+      <Tabs
+        activeKey={active}
+        onSelect={(e) => {
+          if (e) {
+            setActive(e);
+          }
+        }}
+      >
+        <Tab eventKey="details" title="Details">
           <br />
-            <DetailEditor key={active} courseId={cid} quizId={qid} point={point} />          
+          <DetailEditor
+            key={active}
+            courseId={cid}
+            quizId={qid}
+            point={point}
+          />
         </Tab>
         <Tab eventKey="questions" title="Questions">
           <div>
@@ -110,9 +124,28 @@ export default function QuizDetailEditor() {
                   showAnser={showDetail}
                 />
               ))}
-              <div className="mt-2">
+              <div className="mt-2 d-flex ">
                 <AddNewQuestionBtn onClick={AddNewQuestion} />
+                <Button
+                  className="me-2 d-flex align-items-center"
+                  variant="secondary"
+                  size="lg"
+                  // onClick={onClick}
+                >
+                  <FaPlus className="me-2" />
+                  <span>New Question Group</span>
+                </Button>
+                <Button
+                  className="me-2 d-flex align-items-center"
+                  variant="secondary"
+                  size="lg"
+                  // onClick={onClick}
+                >
+                  <CiSearch className="me-2" />
+                  <span>Find Questions</span>
+                </Button>
               </div>
+
               <hr />
               <div className="float-end">
                 <Button

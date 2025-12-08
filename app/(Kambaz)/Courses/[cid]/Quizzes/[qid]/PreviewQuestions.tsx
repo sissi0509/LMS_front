@@ -64,6 +64,10 @@ export default function PreviewQuestions({
     // setCurrentIndex(0);
   }, []);
 
+  if (currentUser?.role === "FACULTY" && !isPreview) {
+    return;
+  }
+
   if (!studentAns && !isPreview) {
     return <div>loading.....</div>;
   }
