@@ -125,7 +125,7 @@ export default function StudentQuizTake({
       <h3>Instructions</h3>
       <div>{quiz.description}</div>
       <br />
-      {quizAttempt.attemptsUsed === 0 && (
+      {quizAttempt.attemptsUsed === 0 && (new Date(quiz.availableFrom) < new Date() && new Date(quiz.availableUntil) > new Date()) && (
         <div className="d-flex justify-content-center">
           <Button
             className="btn-danger rounded-1"
@@ -146,7 +146,7 @@ export default function StudentQuizTake({
       {quizAttempt && quizAttempt.attemptsUsed >= quiz.maxAttempts && ""}
 
       {quizAttempt.attemptsUsed < quiz.maxAttempts &&
-        quizAttempt.attemptsUsed > 0 && (
+        quizAttempt.attemptsUsed > 0 && (new Date(quiz.availableFrom) < new Date() && new Date(quiz.availableUntil) > new Date()) && (
           <div className="d-flex justify-content-center">
             <Button
               className="btn-danger rounded-1"
