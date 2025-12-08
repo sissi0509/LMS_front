@@ -36,8 +36,11 @@ export default function Quizzes() {
         dispatch(setQuizzes(pointUpdatedQuizzes))
     }
 
-    const fetchPublishedQuizzes = async () => {
+    const currentDate = new Date();
+
+    const fetchPublishedAndAvailableQuizzes = async () => {
         const quizzes = await client.findPublishedQuizzesForCourse(cid as string);
+
         const pointUpdatedQuizzes = [];
 
         for (const pq of quizzes) {
@@ -53,8 +56,6 @@ export default function Quizzes() {
         const z = a.toLocaleTimeString('en-US', {timeZone: "UTC", hour: '2-digit', minute: '2-digit', hour12: true}).substring(6, 8).toLowerCase();
         return `${date} at ${t}${z}`;
     }
-
-    const currentDate = new Date();
 
     const setAvailability = (available_date: Date, close_date: Date) => {
 
@@ -86,7 +87,7 @@ export default function Quizzes() {
         if (currentUser?.role === "FACULTY") {
             fetchQuizzes();
         } else {
-            fetchPublishedQuizzes();
+            fetchPublishedAndAvailableQuizzes();
         }
     }, [])
 
