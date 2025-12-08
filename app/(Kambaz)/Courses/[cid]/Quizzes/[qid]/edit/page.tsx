@@ -16,9 +16,9 @@ export default function QuizDetailEditor() {
   const { qid } = useParams<{ qid: string }>();
   const [questions, setQuestions] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState(false);
-  const [point, setQuizPoint] = useState(0)
-  const [active, setActive] = useState("details")
-  const [quiz, setQuiz] = useState<any>({})
+  const [point, setQuizPoint] = useState(0);
+  const [active, setActive] = useState("details");
+  const [quiz, setQuiz] = useState<any>({});
 
   const getQuizPoint = async () => {
     const p = await clientE.findQuizPoints(qid);
@@ -26,9 +26,9 @@ export default function QuizDetailEditor() {
   };
 
   const fetchQuiz = async () => {
-    const quiz = await clientE.getQuizById(qid)
-    setQuiz(quiz)
-  }
+    const quiz = await clientE.getQuizById(qid);
+    setQuiz(quiz);
+  };
 
   const emptyQuestion = {
     _id: "new",
@@ -55,9 +55,11 @@ export default function QuizDetailEditor() {
     setQuestions((prev) => prev.map((q, i) => (i === index ? updated : q)));
   };
 
-  const handleDeleteQuestion = async (questionId: string) => {
-    setQuestions((prev) => prev.filter((q) => q._id !== questionId));
-    if (questionId !== "new") {
+  const handleDeleteQuestion = async (questionId: string, idx: number) => {
+    if (questionId === "new") {
+      setQuestions((prev) => prev.filter((q, i) => i !== idx));
+    } else {
+      setQuestions((prev) => prev.filter((q) => q._id !== questionId));
       await client.deleteQuestionFromQuiz(qid, questionId);
     }
   };
@@ -97,7 +99,12 @@ export default function QuizDetailEditor() {
       >
         <Tab eventKey="details" title="Details">
           <br />
-            <DetailEditor key={active} courseId={cid} quizId={qid} point={point}/>          
+          <DetailEditor
+            key={active}
+            courseId={cid}
+            quizId={qid}
+            point={point}
+          />
         </Tab>
         <Tab eventKey="questions" title="Questions">
           <div>

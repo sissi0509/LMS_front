@@ -90,7 +90,7 @@ export default function GeneralQuestion({
             </div>
             <div>
               <GiPencil onClick={() => setIsEditing(true)} />
-              <RxCross2 onClick={() => onDelete(currentQuestion._id)} />
+              <RxCross2 onClick={() => onDelete(currentQuestion._id, idx)} />
             </div>
           </div>
           {showAnser && (
