@@ -9,19 +9,26 @@ import DetailEditor from "./DetailEditor";
 import { Button, Tab, Tabs } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
+import { MdDoNotDisturb } from "react-icons/md";
 
 export default function QuizDetailEditor() {
   const { cid } = useParams<{ cid: string }>();
   const { qid } = useParams<{ qid: string }>();
   const [questions, setQuestions] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState(false);
-  const [point, setQuizPoint] = useState(0);
-  const [active, setActive] = useState("details");
+  const [point, setQuizPoint] = useState(0)
+  const [active, setActive] = useState("details")
+  const [quiz, setQuiz] = useState<any>({})
 
   const getQuizPoint = async () => {
     const p = await clientE.findQuizPoints(qid);
     setQuizPoint(p);
   };
+
+  const fetchQuiz = async () => {
+    const quiz = await clientE.getQuizById(qid)
+    setQuiz(quiz)
+  }
 
   const emptyQuestion = {
     _id: "new",
@@ -76,11 +83,13 @@ export default function QuizDetailEditor() {
     fetchAllQuestionsForQuiz();
     // setCurrentIndex(0);
     getQuizPoint();
+    fetchQuiz();
   }, [qid, active]);
   return (
     <div>
-      <div>
-        <span>Points {point}</span>
+      <div className="d-flex justify-content-end align-items-center">
+        <div className="me-2">Points {point}</div>
+        <div><MdDoNotDisturb /> {quiz.published ? "Published" : "Unpublished"}</div>
       </div>
       <Tabs
         activeKey={active}
@@ -98,6 +107,7 @@ export default function QuizDetailEditor() {
             quizId={qid}
             point={point}
           />
+            <DetailEditor key={active} courseId={cid} quizId={qid} point={point}/>          
         </Tab>
         <Tab eventKey="questions" title="Questions">
           <div>
