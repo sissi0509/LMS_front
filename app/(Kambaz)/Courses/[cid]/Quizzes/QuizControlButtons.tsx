@@ -39,9 +39,6 @@ export default function QuizControlButtons(
             <DropdownItem onClick={() => setCopyDetail(true)}>
                 Copy
             </DropdownItem>
-            <DropdownItem>
-                Sort by Name
-            </DropdownItem>
         </DropdownMenu>
 
       </Dropdown>
