@@ -101,12 +101,6 @@ export default function QuizDetailEditor() {
       >
         <Tab eventKey="details" title="Details">
           <br />
-          <DetailEditor
-            key={active}
-            courseId={cid}
-            quizId={qid}
-            point={point}
-          />
             <DetailEditor key={active} courseId={cid} quizId={qid} point={point}/>          
         </Tab>
         <Tab eventKey="questions" title="Questions">
