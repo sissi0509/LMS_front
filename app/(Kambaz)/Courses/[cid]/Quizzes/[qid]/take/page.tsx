@@ -157,7 +157,7 @@ export default function TakePage() {
   return (
     <div>
       {showCodePrompt && (
-        <QuizAccessCode quiz={quiz} setPromt={setShowCodePrompt} />
+        <QuizAccessCode quiz={quiz} setPromt={setShowCodePrompt} updateAttempt={createUpdateAttempt} />
       )}
 
       {showCodePrompt === false && (

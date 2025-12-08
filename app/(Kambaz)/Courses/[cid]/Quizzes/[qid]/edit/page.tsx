@@ -87,10 +87,6 @@ export default function QuizDetailEditor() {
   }, [qid, active]);
   return (
     <div>
-      <div className="d-flex justify-content-end align-items-center">
-        <div className="me-2">Points {point}</div>
-        <div><MdDoNotDisturb /> {quiz.published ? "Published" : "Unpublished"}</div>
-      </div>
       <Tabs
         activeKey={active}
         onSelect={(e) => {

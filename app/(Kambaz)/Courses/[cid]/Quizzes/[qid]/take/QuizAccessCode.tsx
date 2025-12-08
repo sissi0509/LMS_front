@@ -2,11 +2,13 @@
 import React, { useState } from 'react'
 import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 
-export default function QuizAccessCode({quiz, setPromt}: 
-  {quiz: any; setPromt: (show: boolean) => void;}) {
+export default function QuizAccessCode({quiz, setPromt, updateAttempt}: 
+  {quiz: any; setPromt: (show: boolean) => void; updateAttempt: () => void;}) {
 
     const [userEnteredCode, setUserEnteredCode] = useState("")
     const [correct, setCorrect] = useState(true)
+
+
 
     if (!quiz) {
         return <div>loading...</div>
@@ -30,6 +32,7 @@ export default function QuizAccessCode({quiz, setPromt}:
                 if (userEnteredCode === quiz.accessCode) {
                   setCorrect(correct)
                   setPromt(false)
+                  updateAttempt()
                 } else {
                   setCorrect(false)
                 }
