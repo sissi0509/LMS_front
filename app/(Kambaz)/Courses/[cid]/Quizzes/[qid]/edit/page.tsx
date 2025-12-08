@@ -7,6 +7,7 @@ import * as clientE from "../../../../client";
 import { useParams } from "next/navigation";
 import DetailEditor from "./DetailEditor";
 import { Button, Tab, Tabs } from "react-bootstrap";
+import { MdDoNotDisturb } from "react-icons/md";
 
 export default function QuizDetailEditor() {
   const { cid } = useParams<{ cid: string }>();
@@ -15,11 +16,17 @@ export default function QuizDetailEditor() {
   const [showDetail, setShowDetail] = useState(false);
   const [point, setQuizPoint] = useState(0)
   const [active, setActive] = useState("details")
+  const [quiz, setQuiz] = useState<any>({})
 
   const getQuizPoint = async () => {
       const p = await clientE.findQuizPoints(qid)
       setQuizPoint(p)
     }
+
+  const fetchQuiz = async () => {
+    const quiz = await clientE.getQuizById(qid)
+    setQuiz(quiz)
+  }
 
   const emptyQuestion = {
     _id: "new",
@@ -73,17 +80,19 @@ export default function QuizDetailEditor() {
     fetchAllQuestionsForQuiz();
     // setCurrentIndex(0);
     getQuizPoint();
+    fetchQuiz();
   }, [qid, active]);
   return (
     <div>
 
-      <div>
-        <span>Points {point}</span>
+      <div className="d-flex justify-content-end align-items-center">
+        <div className="me-2">Points {point}</div>
+        <div><MdDoNotDisturb /> {quiz.published ? "Published" : "Unpublished"}</div>
       </div>
       <Tabs activeKey={active} onSelect={(e) => { if (e) {setActive(e)}}}>
         <Tab eventKey="details" title="Details" >
           <br />
-            <DetailEditor key={active} courseId={cid} quizId={qid} point={point} />          
+            <DetailEditor key={active} courseId={cid} quizId={qid} point={point}/>          
         </Tab>
         <Tab eventKey="questions" title="Questions">
           <div>

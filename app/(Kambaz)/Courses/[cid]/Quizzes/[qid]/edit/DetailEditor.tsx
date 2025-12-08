@@ -47,6 +47,10 @@ export default function DetailEditor({courseId, quizId, point}:
   }
 
   const updateQuizWithoutPublish = async () => {
+    if (!q._id) {
+      console.error("no quid exist");
+      return;
+    }
     const updatedQuiz = await client.updateQuiz(quizId, q)
     setQuiz(updatedQuiz)
   }
@@ -61,7 +65,9 @@ export default function DetailEditor({courseId, quizId, point}:
       fetchQuiz();
   }, [])
 
-  console.log(typeof q.dueDate)
+  if (!quizId) {
+    return <div>loading...</div>
+  }
 
   return (
     <div>
