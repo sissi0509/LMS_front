@@ -99,7 +99,7 @@ export default function TakePage() {
       );
       setAttempt(attempt);
     }
-    fetchAttempt()
+    fetchAttempt();
   };
 
   const handleSubmitAttempt = async (answers: any[]) => {
@@ -135,7 +135,7 @@ export default function TakePage() {
         updated
       );
       setAttempt(savedAttempt);
-      // console.log("Saved Attempt:", savedAttempt);
+      // console.log("!!!!!!!!!!!!!!!!Saved Attempt:", updated);
       router.push(`/Courses/${cid}/Quizzes/${qid}`);
     }
   };
@@ -158,7 +158,11 @@ export default function TakePage() {
   return (
     <div>
       {showCodePrompt && (
-        <QuizAccessCode quiz={quiz} setPromt={setShowCodePrompt} updateAttempt={createUpdateAttempt} />
+        <QuizAccessCode
+          quiz={quiz}
+          setPromt={setShowCodePrompt}
+          updateAttempt={createUpdateAttempt}
+        />
       )}
 
       {showCodePrompt === false && (
