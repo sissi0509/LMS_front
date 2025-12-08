@@ -64,12 +64,14 @@ export default function TakePage() {
     };
   };
 
-  const [showCodePrompt, setShowCodePrompt] = useState(true)
+  const [showCodePrompt, setShowCodePrompt] = useState(true);
 
   const fetchQuiz = async () => {
     const newQuiz = await clientE.getQuizById(qid);
     setQuiz(newQuiz);
-    setShowCodePrompt(newQuiz.accessCode && currentUser?.role !== "FACULTY" ? true : false)
+    setShowCodePrompt(
+      newQuiz.accessCode && currentUser?.role !== "FACULTY" ? true : false
+    );
   };
 
   const fetchAttempt = async () => {
@@ -79,17 +81,25 @@ export default function TakePage() {
   };
 
   const createUpdateAttempt = async () => {
-      const today = new Date().toISOString()
-      if (attempt.attemptsUsed > 0) {
-        const att: any = attempt.attempt;
-        const updated = {...att, startAt: [...att.startAt, today]}
-        const newAtt = await clientE.createOrUpdateAttempt(currentUser?._id ? currentUser?._id : "" , qid, updated)
-        setAttempt(attempt);
-      } else {
-        const attempt = await clientE.createOrUpdateAttempt(currentUser?._id ? currentUser?._id : "", qid, {startAt: [today], submittedAt: [], score: [], answers: []})
-        setAttempt(attempt);
-      }
+    const today = new Date().toISOString();
+    if (attempt.attemptsUsed > 0) {
+      const att: any = attempt.attempt;
+      const updated = { ...att, startAt: [...att.startAt, today] };
+      const newAtt = await clientE.createOrUpdateAttempt(
+        currentUser?._id ? currentUser?._id : "",
+        qid,
+        updated
+      );
+      setAttempt(attempt);
+    } else {
+      const attempt = await clientE.createOrUpdateAttempt(
+        currentUser?._id ? currentUser?._id : "",
+        qid,
+        { startAt: [today], submittedAt: [], score: [], answers: [] }
+      );
+      setAttempt(attempt);
     }
+  };
 
   const handleSubmitAttempt = async (answers: any[]) => {
     if (isPreview) {
@@ -112,10 +122,10 @@ export default function TakePage() {
       router.push(`/Courses/${cid}/Quizzes/${qid}?preview=1`);
     } else {
       const today = new Date().toISOString();
-      const att = attempt.attempt;
+      const att = attempt?.attempt;
       const updated = {
         ...att,
-        submittedAt: [...att.submittedAt, today],
+        submittedAt: [...(att.submittedAt || []), today],
         answers: answers,
       };
       const savedAttempt = await clientE.createOrUpdateAttempt(
@@ -128,7 +138,6 @@ export default function TakePage() {
       router.push(`/Courses/${cid}/Quizzes/${qid}`);
     }
   };
-
 
   useEffect(() => {
     fetchQuiz();
@@ -143,25 +152,26 @@ export default function TakePage() {
   if (!questions || questions.length === 0) {
     return <div>Loading questions...</div>;
   }
-  console.log(showCodePrompt)
+  console.log(showCodePrompt);
 
   return (
     <div>
+      {showCodePrompt && (
+        <QuizAccessCode quiz={quiz} setPromt={setShowCodePrompt} />
+      )}
 
-      {showCodePrompt && <QuizAccessCode quiz={quiz} setPromt={setShowCodePrompt} />}
-
-      {(showCodePrompt === false &&
+      {showCodePrompt === false && (
         <div>
-        <QuizDescription
-          quiz={quiz}
-          userId={currentUser ? currentUser._id : ""}
-        />
-        <Questions
-          questions={questions}
-          onePerTime={quiz.oneQuestionPerTime}
-          onSubmit={handleSubmitAttempt}
-        />
-      </div>
+          <QuizDescription
+            quiz={quiz}
+            userId={currentUser ? currentUser._id : ""}
+          />
+          <Questions
+            questions={questions}
+            onePerTime={quiz.oneQuestionPerTime}
+            onSubmit={handleSubmitAttempt}
+          />
+        </div>
       )}
     </div>
   );
