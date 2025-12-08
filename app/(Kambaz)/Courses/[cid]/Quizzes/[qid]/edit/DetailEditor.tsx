@@ -10,7 +10,8 @@ import { RxCross2 } from "react-icons/rx";
 import * as client from "../../../../client";
 import Link from "next/link";
 
-export default function DetailEditor({courseId, quizId}: {courseId: string; quizId: string}) {
+export default function DetailEditor({courseId, quizId, point}: 
+  {courseId: string; quizId: string; point: number}) {
 
   const [q, setQuiz] = useState<any>({})
   const [multipleAttempt, setMultipleAttempt] = useState(false)
@@ -83,6 +84,16 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
                 <option value="UNGRADED_SURVEY">Ungraded Survey</option>
               </Form.Select>
             </Col>
+          </Row>
+
+          <Row className="mb-3">
+            <Form.Label sm="4" column className="text-end">
+              Points
+            </Form.Label>
+            <Col sm="4">
+              <Form.Control readOnly type="number" value={point} />
+            </Col>
+
           </Row>
 
           <Row>
@@ -233,7 +244,7 @@ export default function DetailEditor({courseId, quizId}: {courseId: string; quiz
                                 {
                                   const ac = e.target.checked;
                                   setAccessCodeRequirement(ac);
-                                  setQuiz({...q, accessCode: ac ? q.accessCode || "123" : null})
+                                  setQuiz({...q, accessCode: ac ? q.accessCode || "" : null})
                                   }}/>
 
                   {accessCodeRequirement ? 

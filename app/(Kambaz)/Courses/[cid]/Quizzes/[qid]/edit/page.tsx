@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import AddNewQuestionBtn from "./AddNewQuestionBtn";
 import GeneralQuestion from "./GeneralQuestion";
 import * as client from "../client";
+import * as clientE from "../../../../client";
 import { useParams } from "next/navigation";
 import DetailEditor from "./DetailEditor";
 import { Button, Tab, Tabs } from "react-bootstrap";
@@ -12,6 +13,13 @@ export default function QuizDetailEditor() {
   const { qid } = useParams<{ qid: string }>();
   const [questions, setQuestions] = useState<any[]>([]);
   const [showDetail, setShowDetail] = useState(false);
+  const [point, setQuizPoint] = useState(0)
+  const [active, setActive] = useState("details")
+
+  const getQuizPoint = async () => {
+      const p = await clientE.findQuizPoints(qid)
+      setQuizPoint(p)
+    }
 
   const emptyQuestion = {
     _id: "new",
@@ -60,16 +68,22 @@ export default function QuizDetailEditor() {
     setQuestions(questionsFromDB);
   };
 
+
   useEffect(() => {
     fetchAllQuestionsForQuiz();
     // setCurrentIndex(0);
-  }, [qid]);
+    getQuizPoint();
+  }, [qid, active]);
   return (
     <div>
-      <Tabs>
-        <Tab eventKey="details" title="Details">
+
+      <div>
+        <span>Points {point}</span>
+      </div>
+      <Tabs activeKey={active} onSelect={(e) => { if (e) {setActive(e)}}}>
+        <Tab eventKey="details" title="Details" >
           <br />
-          <DetailEditor courseId={cid} quizId={qid} />
+            <DetailEditor key={active} courseId={cid} quizId={qid} point={point} />          
         </Tab>
         <Tab eventKey="questions" title="Questions">
           <div>
